@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Citações ABNT</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        input[type="text"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .output {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e9f7ef;
+            border: 1px solid #c3e6cb;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #155724;
+        }
+
+        .output p {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gerador de Citações ABNT</h1>
+
+    <div class="form-container">
+        <!-- Tipo de Documento -->
+        <div class="form-group">
+            <label for="tipo">Tipo de documento:</label>
+            <select id="tipo">
+                <option value="artigo">Artigo</option>
+                <option value="livro">Livro</option>
+                <option value="capitulo">Capítulo</option>
+                <option value="documento_oficial">Documento Oficial</option>
+                <option value="site">Site</option>
+            </select>
+        </div>
+
+        <!-- Autores -->
+        <div class="form-group">
+            <label for="autores">Autores (separados por vírgula):</label>
+            <input type="text" id="autores" placeholder="Ex: João Silva, Maria Souza">
+        </div>
+
+        <!-- Título -->
+        <div class="form-group">
+            <label for="titulo">Título:</label>
+            <input type="text" id="titulo" placeholder="Título do documento">
+        </div>
+
+        <!-- Revista (apenas para artigos) -->
+        <div class="form-group">
+            <label for="revista">Revista (apenas para artigos):</label>
+            <input type="text" id="revista" placeholder="Nome da revista">
+        </div>
+
+        <!-- Ano de Publicação -->
+        <div class="form-group">
+            <label for="ano">Ano de publicação:</label>
+            <input type="text" id="ano" placeholder="Ex: 2023">
+        </div>
+
+        <!-- Paginação -->
+        <div class="form-group">
+            <label for="paginacao">Paginação (opcional):</label>
+            <input type="text" id="paginacao" placeholder="Ex: 10-20">
+        </div>
+
+        <!-- DOI -->
+        <div class="form-group">
+            <label for="doi">DOI (opcional):</label>
+            <input type="text" id="doi" placeholder="DOI do artigo">
+        </div>
+
+        <!-- Botão para Gerar Citação -->
+        <button id="gerar-citacao">Gerar Citação</button>
+
+        <!-- Área para exibir a citação gerada -->
+        <div class="output" id="output"></div>
+    </div>
+
+    <script>
+        // Função para formatar o nome do autor
+        function formatarNomeAutor(nome) {
+            const partes = nome.trim().split(' ');
+            if (partes.length > 1) {
+                const ultimoSobrenome = partes.pop().toUpperCase();
+                const restanteNome = partes.join(' ');
+                return `${ultimoSobrenome}, ${restanteNome}`;
+            }
+            return nome.toUpperCase();
+        }
+
+        // Função para formatar a citação
+        function formatarCitacao(tipo, dados) {
+            if (tipo === "artigo") {
+                const autores = dados.autores.map(formatarNomeAutor).join("; ");
+                const doi = dados.doi ? ` DOI: ${dados.doi}.` : "";
+                const paginacao = dados.paginacao ? ` p. ${dados.paginacao}.` : "";
+                return `${autores}. ${dados.titulo}. ${dados.revista}, ${dados.ano}.${paginacao}${doi}`;
+            } else if (tipo === "livro") {
+                const autores = dados.autores.map(formatarNomeAutor).join("; ");
+                const organizador = dados.organizador === "s" ? " (Org.)" : "";
+                const edicao = dados.edicao ? ` ${dados.edicao} ed.` : "";
+                const volume = dados.volume ? ` v. ${dados.volume}` : "";
+                return `${autores}${organizador}. ${dados.titulo}.${edicao}${volume} ${dados.local}: ${dados.editora}, ${dados.ano}.`;
+            } else if (tipo === "capitulo") {
+                const autoresCapitulo = dados.autores.map(formatarNomeAutor).join("; ");
+                const autoresLivro = dados.autores_livro.map(formatarNomeAutor).join("; ");
+                const organizador = dados.livro_tem_organizador
+                    ? ` In: ${autoresLivro} (Org.).`
+                    : ` In: ${autoresLivro}.`;
+                const edicao = dados.edicao ? ` ${dados.edicao} ed.` : "";
+                const volume = dados.volume ? ` v. ${dados.volume}` : "";
+                return `${autoresCapitulo}. ${dados.titulo}.${organizador} ${dados.livro}.${edicao}${volume} ${dados.local}: ${dados.editora}, ${dados.ano}. p. ${dados.paginas}.`;
+            } else if (tipo === "documento_oficial") {
+                return `${dados.orgao}. ${dados.titulo}. ${dados.tipo}, nº ${dados.numero}, de ${dados.data}. Disponível em: ${dados.url}. Acesso em: ${dados.acesso}.`;
+            } else if (tipo === "site") {
+                const autores = dados.autores.map(formatarNomeAutor).join("; ");
+                return `${autores}. ${dados.titulo}. Disponível em: ${dados.url}. Acesso em: ${dados.acesso}.`;
+            } else {
+                return "Tipo de documento não suportado.";
+            }
+        }
+
+        // Função principal
+        document.getElementById("gerar-citacao").addEventListener("click", () => {
+            // Capturar valores dos campos HTML
+            const tipo = document.getElementById("tipo").value;
+            const autores = document.getElementById("autores").value.split(",").map(autor => autor.trim());
+            const titulo = document.getElementById("titulo").value;
+            const revista = document.getElementById("revista").value;
+            const ano = document.getElementById("ano").value;
+            const paginacao = document.getElementById("paginacao").value.trim() || null;
+            const doi = document.getElementById("doi").value.trim() || null;
+
+            // Montar o objeto de dados
+            const dados = {
+                autores,
+                titulo,
+                revista,
+                ano,
+                paginacao,
+                doi
+            };
+
+            // Gerar a citação
+            const citacao = formatarCitacao(tipo, dados);
+
+            // Exibir a citação na página
+            document.getElementById("output").innerHTML = `<p>Citação formatada na ABNT:</p><p>${citacao}</p>`;
+        });
+    </script>
+</body>
+</html>
