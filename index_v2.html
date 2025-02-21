@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerador de Citações ABNT</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f9f9f9;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .output {
+      margin-top: 20px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      background-color: #f9f9f9;
+      border-radius: 4px;
+    }
+    .hidden {
+      display: none;
+    }
+    footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+      color: #666;
+    }
+    footer a {
+      color: #007bff;
+      text-decoration: none;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+    .welcome-screen {
+      text-align: center;
+      padding: 50px 20px;
+    }
+    .welcome-screen button {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Gerador de Citações ABNT</h1>
+
+    <!-- Tela inicial -->
+    <div id="welcome-screen" class="welcome-screen">
+      <h2>Bem-vindo ao Gerador de Citações ABNT</h2>
+      <button onclick="startForm()">Começar</button>
+    </div>
+
+    <!-- Formulário -->
+    <div id="form-container" class="hidden">
+      <label for="tipo">Tipo de documento:</label>
+      <select id="tipo" onchange="toggleFields()">
+        <option value="artigo">Artigo</option>
+        <option value="livro">Livro</option>
+        <option value="capitulo">Capítulo</option>
+        <option value="documento_oficial">Documento Oficial</option>
+        <option value="site">Site</option>
+      </select>
+
+      <label for="autores">Autores (separados por vírgula):</label>
+      <input type="text" id="autores" placeholder="Ex: João Silva, Maria Souza">
+
+      <label for="titulo">Título:</label>
+      <input type="text" id="titulo" placeholder="Ex: Título do Artigo/Livro">
+
+      <!-- Campos específicos para artigos -->
+      <div id="artigo-fields" class="hidden">
+        <label for="revista">Revista:</label>
+        <input type="text" id="revista" placeholder="Ex: Nome da Revista">
+        <label for="paginacao">Paginação (opcional):</label>
+        <input type="text" id="paginacao" placeholder="Ex: 10-20">
+      </div>
+
+      <!-- Campos específicos para livros -->
+      <div id="livro-fields" class="hidden">
+        <label for="local">Local de publicação:</label>
+        <input type="text" id="local" placeholder="Ex: São Paulo">
+        <label for="editora">Editora:</label>
+        <input type="text" id="editora" placeholder="Ex: Editora XYZ">
+        <label for="organizador">O autor é também organizador da obra? (s/n):</label>
+        <input type="text" id="organizador" placeholder="Ex: s">
+      </div>
+
+      <!-- Campos específicos para capítulos -->
+      <div id="capitulo-fields" class="hidden">
+        <label for="autores-livro">Autores/organizadores do livro (separados por vírgula):</label>
+        <input type="text" id="autores-livro" placeholder="Ex: João Silva, Maria Souza">
+        <label for="livro">Título do livro:</label>
+        <input type="text" id="livro" placeholder="Ex: Título do Livro">
+        <label for="local">Local de publicação:</label>
+        <input type="text" id="local" placeholder="Ex: São Paulo">
+        <label for="editora">Editora:</label>
+        <input type="text" id="editora" placeholder="Ex: Editora XYZ">
+        <label for="paginas">Páginas do capítulo (ex.: 10-20):</label>
+        <input type="text" id="paginas" placeholder="Ex: 10-20">
+      </div>
+
+      <!-- Campos específicos para documentos oficiais -->
+      <div id="documento-oficial-fields" class="hidden">
+        <label for="orgao">Órgão responsável:</label>
+        <input type="text" id="orgao" placeholder="Ex: Ministério da Saúde">
+        <label for="tipo-documento">Tipo de documento (ex.: Portaria, Lei, Decreto):</label>
+        <input type="text" id="tipo-documento" placeholder="Ex: Portaria">
+        <label for="numero">Número do documento:</label>
+        <input type="text" id="numero" placeholder="Ex: 123">
+        <label for="data-publicacao">Data de publicação (DD/MM/AAAA):</label>
+        <input type="text" id="data-publicacao" placeholder="Ex: 01/01/2023">
+        <label for="url">URL:</label>
+        <input type="text" id="url" placeholder="Ex: http://www.exemplo.com">
+        <label for="acesso">Data de acesso (DD/MM/AAAA):</label>
+        <input type="text" id="acesso" placeholder="Ex: 01/01/2023">
+      </div>
+
+      <!-- Campos específicos para sites -->
+      <div id="site-fields" class="hidden">
+        <label for="url-site">URL:</label>
+        <input type="text" id="url-site" placeholder="Ex: http://www.exemplo.com">
+        <label for="acesso-site">Data de acesso (DD/MM/AAAA):</label>
+        <input type="text" id="acesso-site" placeholder="Ex: 01/01/2023">
+      </div>
+
+      <label for="ano">Ano de publicação:</label>
+      <input type="text" id="ano" placeholder="Ex: 2023">
+
+      <label for="doi">DOI (opcional):</label>
+      <input type="text" id="doi" placeholder="Ex: 10.1234/example">
+
+      <button onclick="gerarCitacao()">Gerar Citação</button>
+      <button onclick="reiniciarFormulario()">Reiniciar</button>
+
+      <div class="output" id="resultado"></div>
+    </div>
+  </div>
+
+  <footer>
+    Desenvolvido por <a href="https://github.com/RBersi" target="_blank">Bersi with Qwen</a>
+  </footer>
+
+  <script>
+    function startForm() {
+      document.getElementById("welcome-screen").classList.add("hidden");
+      document.getElementById("form-container").classList.remove("hidden");
+    }
+
+    function toggleFields() {
+      const tipo = document.getElementById("tipo").value;
+
+      // Ocultar todos os campos específicos
+      document.getElementById("artigo-fields").classList.add("hidden");
+      document.getElementById("livro-fields").classList.add("hidden");
+      document.getElementById("capitulo-fields").classList.add("hidden");
+      document.getElementById("documento-oficial-fields").classList.add("hidden");
+      document.getElementById("site-fields").classList.add("hidden");
+
+      // Exibir campos específicos com base no tipo selecionado
+      if (tipo === "artigo") {
+        document.getElementById("artigo-fields").classList.remove("hidden");
+      } else if (tipo === "livro") {
+        document.getElementById("livro-fields").classList.remove("hidden");
+      } else if (tipo === "capitulo") {
+        document.getElementById("capitulo-fields").classList.remove("hidden");
+      } else if (tipo === "documento_oficial") {
+        document.getElementById("documento-oficial-fields").classList.remove("hidden");
+      } else if (tipo === "site") {
+        document.getElementById("site-fields").classList.remove("hidden");
+      }
+    }
+
+    function gerarCitacao() {
+      const tipo = document.getElementById("tipo").value;
+      const autores = document.getElementById("autores").value.split(",").map((autor) => autor.trim());
+      const titulo = document.getElementById("titulo").value;
+      const ano = document.getElementById("ano").value;
+      const doi = document.getElementById("doi").value || null;
+
+      let citacao = "";
+
+      if (tipo === "artigo") {
+        const revista = document.getElementById("revista").value;
+        const paginacao = document.getElementById("paginacao").value || "";
+        citacao = `${formatarNomeAutor(autores[0])}. ${titulo}. ${revista}, ${ano}.${paginacao ? ` p. ${paginacao}.` : ""}${doi ? ` DOI: ${doi}.` : ""}`;
+      } else if (tipo === "livro") {
+        const local = document.getElementById("local").value;
+        const editora = document.getElementById("editora").value;
+        const organizador = document.getElementById("organizador").value.toLowerCase() === "s" ? " (Org.)" : "";
+        citacao = `${formatarNomeAutor(autores[0])}${organizador}. ${titulo}. ${local}: ${editora}, ${ano}.${doi ? ` DOI: ${doi}.` : ""}`;
+      } else if (tipo === "capitulo") {
+        const autoresLivro = document.getElementById("autores-livro").value.split(",").map((autor) => autor.trim());
+        const livro = document.getElementById("livro").value;
+        const local = document.getElementById("local").value;
+        const editora = document.getElementById("editora").value;
+        const paginas = document.getElementById("paginas").value;
+        citacao = `${formatarNomeAutor(autores[0])}. ${titulo}. In: ${formatarNomeAutor(autoresLivro[0])}. ${livro}. ${local}: ${editora}, ${ano}. p. ${paginas}.${doi ? ` DOI: ${doi}.` : ""}`;
+      } else if (tipo === "documento_oficial") {
+        const orgao = document.getElementById("orgao").value;
+        const tipoDocumento = document.getElementById("tipo-documento").value;
+        const numero = document.getElementById("numero").value;
+        const dataPublicacao = document.getElementById("data-publicacao").value;
+        const url = document.getElementById("url").value;
+        const acesso = document.getElementById("acesso").value;
+        citacao = `${orgao}. ${titulo}. ${tipoDocumento}, nº ${numero}, de ${dataPublicacao}. Disponível em: ${url}. Acesso em: ${acesso}.`;
+      } else if (tipo === "site") {
+        const url = document.getElementById("url-site").value;
+        const acesso = document.getElementById("acesso-site").value;
+        citacao = `${formatarNomeAutor(autores[0])}. ${titulo}. Disponível em: ${url}. Acesso em: ${acesso}.`;
+      }
+
+      document.getElementById("resultado").innerText = citacao;
+    }
+
+    function formatarNomeAutor(nome) {
+      const partes = nome.split(' ');
+      if (partes.length > 1) {
+        const ultimoSobrenome = partes.pop().toUpperCase();
+        const restanteNome = partes.join(' ');
+        return `${ultimoSobrenome}, ${restanteNome}`;
+      }
+      return nome.toUpperCase();
+    }
+
+    function reiniciarFormulario() {
+      document.getElementById("tipo").selectedIndex = 0;
+      document.getElementById("autores").value = "";
+      document.getElementById("titulo").value = "";
+      document.getElementById("ano").value = "";
+      document.getElementById("doi").value = "";
+      document.getElementById("resultado").innerText = "";
+
+      // Limpar campos específicos
+      document.getElementById("revista").value = "";
+      document.getElementById("paginacao").value = "";
+      document.getElementById("local").value = "";
+      document.getElementById("editora").value = "";
+      document.getElementById("organizador").value = "";
+      document.getElementById("autores-livro").value = "";
+      document.getElementById("livro").value = "";
+      document.getElementById("paginas").value = "";
+      document.getElementById("orgao").value = "";
+      document.getElementById("tipo-documento").value = "";
+      document.getElementById("numero").value = "";
+      document.getElementById("data-publicacao").value = "";
+      document.getElementById("url").value = "";
+      document.getElementById("acesso").value = "";
+      document.getElementById("url-site").value = "";
+      document.getElementById("acesso-site").value = "";
+
+      // Ocultar todos os campos específicos
+      document.getElementById("artigo-fields").classList.add("hidden");
+      document.getElementById("livro-fields").classList.add("hidden");
+      document.getElementById("capitulo-fields").classList.add("hidden");
+      document.getElementById("documento-oficial-fields").classList.add("hidden");
+      document.getElementById("site-fields").classList.add("hidden");
+    }
+  </script>
+</body>
+</html>
