@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerador de Citações ABNT</title>
+  <style>
+    /* Estilos Gerais */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 500px;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    p {
+      text-align: center;
+      color: #666;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+    label {
+      margin-top: 10px;
+      font-weight: bold;
+      color: #333;
+    }
+    input, select, button {
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .hidden {
+      display: none;
+    }
+    #result {
+      margin-top: 20px;
+      text-align: center;
+    }
+    #citationOutput {
+      font-style: italic;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Gerador de Citações ABNT</h1>
+    <p>Bem-vindo ao Gerador de Citações ABNT</p>
+    <form id="citationForm">
+      <!-- Tipo de Documento -->
+      <label for="documentType">Tipo de documento:</label>
+      <select id="documentType" name="documentType" required>
+        <option value="">Selecione...</option>
+        <option value="artigo">Artigo</option>
+        <option value="livro">Livro</option>
+        <option value="capitulo">Capítulo de Livro</option>
+        <option value="documentoOficial">Documento Oficial</option>
+        <option value="site">Site</option>
+      </select>
+      <!-- Autores -->
+      <label for="authors">Autores (separados por vírgula):</label>
+      <input type="text" id="authors" name="authors" placeholder="Ex.: João Silva, Maria Souza" required>
+      <!-- Título -->
+      <label for="title">Título:</label>
+      <input type="text" id="title" name="title" placeholder="Título do documento" required>
+      <!-- Revista (apenas para artigos) -->
+      <div id="journalSection" style="display: none;">
+        <label for="journal">Revista:</label>
+        <input type="text" id="journal" name="journal" placeholder="Nome da revista">
+      </div>
+      <!-- Volume e Número (apenas para artigos) -->
+      <div id="volumeNumberSection" style="display: none;">
+        <label for="volume">Volume:</label>
+        <input type="text" id="volume" name="volume" placeholder="Ex.: 10">
+        <label for="number">Número:</label>
+        <input type="text" id="number" name="number" placeholder="Ex.: 2">
+      </div>
+      <!-- Editora (para livros e capítulos) -->
+      <div id="publisherSection" style="display: none;">
+        <label for="publisher">Editora:</label>
+        <input type="text" id="publisher" name="publisher" placeholder="Nome da editora">
+      </div>
+      <!-- Local de Publicação (para livros e capítulos) -->
+      <div id="locationSection" style="display: none;">
+        <label for="location">Local de Publicação:</label>
+        <input type="text" id="location" name="location" placeholder="Ex.: São Paulo">
+      </div>
+      <!-- Ano de Publicação -->
+      <label for="year">Ano de publicação:</label>
+      <input type="number" id="year" name="year" placeholder="Ex.: 2023" required>
+      <!-- Paginação (opcional) -->
+      <label for="pagination">Paginação (opcional):</label>
+      <input type="text" id="pagination" name="pagination" placeholder="Ex.: 10-20">
+      <!-- DOI ou URL (opcional) -->
+      <label for="doi">DOI ou URL (opcional):</label>
+      <input type="text" id="doi" name="doi" placeholder="Ex.: https://doi.org/10.xxxx/example">
+      <!-- Botões -->
+      <button type="submit">Gerar Citação</button>
+      <button type="button" id="clearFormButton">Limpar Formulário</button>
+    </form>
+    <!-- Resultado -->
+    <div id="result" class="hidden">
+      <h2>Citação Gerada:</h2>
+      <p id="citationOutput"></p>
+    </div>
+    <p style="text-align: center; margin-top: 20px;">Desenvolvido por Bersi with Qwen</p>
+  </div>
+  <script>
+  
+// Função para formatar os nomes dos autores
+function formatAuthors(authors) {
+  // Dividir os autores por vírgula
+  const authorList = authors.split(',').map(author => author.trim());
+  
+  // Formatar cada autor
+  const formattedAuthors = authorList.map(author => {
+    const nameParts = author.split(' ');
+    if (nameParts.length > 1) {
+      // Último nome em caixa alta + restante do nome
+      const lastName = nameParts.pop().toUpperCase();
+      const firstName = nameParts.join(' ');
+      return `${lastName}, ${firstName}`;
+    }
+    // Se houver apenas um nome, retorna em caixa alta
+    return author.toUpperCase();
+  });
+
+  // Juntar os autores com ponto e vírgula
+  return formattedAuthors.join('; ');
+}
+
+// Função para gerar citação
+document.getElementById('citationForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+  // Captura os valores dos campos
+  const documentType = document.getElementById('documentType').value;
+  let authors = document.getElementById('authors').value.trim();
+  const title = document.getElementById('title').value.trim();
+  const journal = document.getElementById('journal').value.trim();
+  const volume = document.getElementById('volume').value.trim();
+  const number = document.getElementById('number').value.trim();
+  const publisher = document.getElementById('publisher').value.trim();
+  const location = document.getElementById('location').value.trim();
+  const year = document.getElementById('year').value.trim();
+  const pagination = document.getElementById('pagination').value.trim();
+  const doi = document.getElementById('doi').value.trim();
+
+  // Formatar os nomes dos autores
+  authors = formatAuthors(authors);
+
+  // Formata a citação com base no tipo de documento
+  let citation = '';
+  if (documentType === 'artigo') {
+    citation = `${authors}. ${title}. <b>${journal}</b>, v. ${volume}, n. ${number}, ${year}. ${pagination ? `p. ${pagination}.` : ''} ${doi ? `DOI: ${doi}` : ''}`;
+  } else if (documentType === 'livro') {
+    citation = `${authors}. ${title}. ${location}: ${publisher}, ${year}. ${pagination ? `p. ${pagination}.` : ''} ${doi ? `DOI: ${doi}` : ''}`;
+  } else if (documentType === 'capitulo') {
+    citation = `${authors}. ${title}. In: ${publisher}. ${location}: ${year}. ${pagination ? `p. ${pagination}.` : ''} ${doi ? `DOI: ${doi}` : ''}`;
+  } else if (documentType === 'site') {
+    citation = `${authors}. ${title}. Disponível em: ${doi}. Acesso em: ${new Date().toLocaleDateString('pt-BR')}.`;
+  }
+
+  // Exibe o resultado usando innerHTML para interpretar as tags HTML
+  const citationOutput = document.getElementById('citationOutput');
+  citationOutput.innerHTML = citation; // Use innerHTML aqui
+  document.getElementById('result').classList.remove('hidden');
+});
+
+    // Função para mostrar/esconder seções dependendo do tipo de documento
+    document.getElementById('documentType').addEventListener('change', function () {
+      const journalSection = document.getElementById('journalSection');
+      const volumeNumberSection = document.getElementById('volumeNumberSection');
+      const publisherSection = document.getElementById('publisherSection');
+      const locationSection = document.getElementById('locationSection');
+
+      if (this.value === 'artigo') {
+        journalSection.style.display = 'block';
+        volumeNumberSection.style.display = 'block';
+        publisherSection.style.display = 'none';
+        locationSection.style.display = 'none';
+      } else if (this.value === 'livro' || this.value === 'capitulo') {
+        journalSection.style.display = 'none';
+        volumeNumberSection.style.display = 'none';
+        publisherSection.style.display = 'block';
+        locationSection.style.display = 'block';
+      } else {
+        journalSection.style.display = 'none';
+        volumeNumberSection.style.display = 'none';
+        publisherSection.style.display = 'none';
+        locationSection.style.display = 'none';
+      }
+    });
+
+    // Função para limpar o formulário
+    document.getElementById('clearFormButton').addEventListener('click', function () {
+      // Reseta todos os campos do formulário
+      document.getElementById('citationForm').reset();
+
+      // Esconde a seção de resultado
+      document.getElementById('result').classList.add('hidden');
+
+      // Reseta as seções condicionais
+      document.getElementById('journalSection').style.display = 'none';
+      document.getElementById('volumeNumberSection').style.display = 'none';
+      document.getElementById('publisherSection').style.display = 'none';
+      document.getElementById('locationSection').style.display = 'none';
+
+      // Reseta o campo de seleção de tipo de documento
+      document.getElementById('documentType').selectedIndex = 0;
+    });
+  </script>
+</body>
+</html>
