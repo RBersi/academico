@@ -27,17 +27,12 @@
     h1 {
       text-align: center;
       color: #333;
-    }
-/* *p {
-      text-align: center;
-      color: #666;
-    }
-*/    
+    } 
     p {
-  text-align: center; /* Centraliza o texto horizontalmente */
-  font-style: normal; /* Garante que a fonte seja regular (não itálico) */
-  font-weight: normal; /* Garante que a fonte seja regular (não negrito) */
-}
+      text-align: center; /* Centraliza o texto horizontalmente */
+      font-style: normal; /* Garante que a fonte seja regular (não itálico) */
+      font-weight: normal; /* Garante que a fonte seja regular (não negrito) */
+    }
     form {
       display: flex;
       flex-direction: column;
@@ -125,7 +120,7 @@
       </div>
       <!-- Local de Publicação (para livros e capítulos) -->
       <div id="locationSection" style="display: none;">
-        <label for="location">Local de Publicação:</label>
+        <label for="location">Cidade:</label>
         <input type="text" id="location" name="location" placeholder="Ex.: São Paulo">
       </div>
       <!-- Ano de Publicação -->
@@ -200,9 +195,9 @@ document.getElementById('citationForm').addEventListener('submit', function (e) 
   if (documentType === 'artigo') {
     citation = `${authors}. ${title}. <b>${journal}</b>, v. ${volume}, n. ${number}, ${year}. ${pagination ? `p. ${pagination}.` : ''} ${doi ? `DOI: ${doi}` : ''}`;
   } else if (documentType === 'livro') {
-    citation = `${authors}. ${title}. ${location}: ${publisher}, ${year}. ${pagination ? `p. ${pagination}.` : ''} ${doi ? `DOI: ${doi}` : ''}`;
+    citation = `${authors}. <b>${title}</b>. ${location}: ${publisher}, ${year}. ${pagination ? `p. ${pagination}.` : ''} ${doi ? `DOI: ${doi}` : ''}`;
   } else if (documentType === 'capitulo') {
-    citation = `${authors}. ${title}. In: ${publisher}. ${location}: ${year}. ${pagination ? `p. ${pagination}.` : ''} ${doi ? `DOI: ${doi}` : ''}`;
+    citation = `${authors}. ${title}. In: <b>${publisher}</b>. ${location}: ${year}. ${pagination ? `p. ${pagination}.` : ''} ${doi ? `DOI: ${doi}` : ''}`;
   } else if (documentType === 'site') {
     citation = `${authors}. ${title}. Disponível em: ${doi}. Acesso em: ${new Date().toLocaleDateString('pt-BR')}.`;
   }
