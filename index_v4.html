@@ -49,6 +49,12 @@
         button:hover {
             background-color: #0056b3;
         }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
         .citation-output {
             margin-top: 20px;
             padding: 10px;
@@ -163,6 +169,10 @@
         <input type="text" id="siteAccessDate">
     </div>
 
+  <footer>
+    Desenvolvido por <a href="https://github.com/RBersi" target="_blank">Bersi</a>
+  </footer>
+    
     <script>
         // Função para formatar nomes de autores conforme ABNT
         function formatAuthors(authorsString) {
@@ -233,7 +243,11 @@ function generateArticleCitation() {
     const year = document.getElementById("articleYear").value;
     const doi = document.getElementById("articleDOI").value;
 
-    const citation = `${authors}. ${title}. <span class="bold-title">${journal}</span>, v. ${volume}, n. ${number}, ${year}. DOI: ${doi}`;
+const citation = `${authors}. ${title}. <span class="bold-title">${journal}</span>` +
+  `${volume ? `, v. ${volume}` : ''}` +
+  `${number ? `, n. ${number}` : ''}` +
+  `, ${year}.` +
+  `${doi ? `. DOI: ${doi}` : ''}`;
     return citation; // Retorna a citação
 }
 
@@ -246,7 +260,15 @@ function generateBookCitation() {
     const year = document.getElementById("bookYear").value;
     const pages = document.getElementById("bookPages").value;
 
-    return `${authors}. <span class="bold-title">${title}</span>. ${edition} ed. ${city}: ${publisher}, ${year}. ${pages} p.`; // Já com o negrito no título
+const citation = `${authors}. <span class="bold-title">${title}</span>` +
+  `${edition ? `. ${edition} ed` : ''}` +
+  `${city ? `. ${city}` : ''}` +
+  `${publisher ? `: ${publisher}` : ''}` +
+  `, ${year}.` +
+  `${pages ? `. ${pages} p.` : ''}`;
+
+return citation; // Retorna a citação
+    
 }
 
 function generateChapterCitation() {
@@ -260,7 +282,15 @@ function generateChapterCitation() {
     const year = document.getElementById("bookYear").value;
     const pages = document.getElementById("bookPages").value;
 
-    return `${chapterAuthors}. ${chapterTitle}. In: ${bookEditors} (Org.). <span class="bold-title">${bookTitle}</span>. ${edition} ed. ${city}: ${publisher}, ${year}. p. ${pages}.`; // Negrito aplicado ao título do livro
+const citation = `${chapterAuthors}. ${chapterTitle}. In: ${bookEditors} (Org.). <span class="bold-title">${bookTitle}</span>` +
+  `${edition ? `. ${edition} ed` : ''}` +
+  `${city ? `. ${city}` : ''}` +
+  `${publisher ? `: ${publisher}` : ''}` +
+  `, ${year}` +
+  `${pages ? `. p. ${pages}` : ''}.`;
+  
+return citation; // Retorna a citação
+
 }
 
 
