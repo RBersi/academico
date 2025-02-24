@@ -223,8 +223,10 @@
     <div id="siteFields" style="display:none">
         <label for="siteAuthors">Autores (separados por vírgula):</label>
         <input type="text" id="siteAuthors">
-        <label for="siteTitle">Título:</label>
+        <label for="siteTitle">Título da página:</label>
         <input type="text" id="siteTitle">
+        <label for="siteSite">Título do site:</label>
+        <input type="text" id="siteSite">
         <label for="siteURL">URL:</label>
         <input type="text" id="siteURL">
         <label for="siteAccessDate">Data de acesso (DD/MM/AAAA):</label>
@@ -392,11 +394,11 @@ function generateOfficialDocumentCitation() {
 
     // Corrigindo o uso de `bookTitle` para `docTitle` e removendo `year`
     const citation = `${agency}. ${docType} nº ${docNumber}, de ${publicationDate}. <span class="bold-title">${docTitle}</span>` +
-        `${docSubtitle ? `: ${docSubtitle}.` : ''}` + 
-        `${docCity ? `. ${docCity}` : ''}` +
-        `${docVolume ? `, v. ${docVolume},` : ''}` +
-        `${docPages ? `, p. ${docPages}` : ''}` + 
-        `${publicationDate ? `, ${publicationDate}.` : ''}` + 
+        `${docSubtitle ? `: ${docSubtitle}.` : '.'}` + 
+        `${docCity ? ` ${docCity},` : ''}` +
+        `${docVolume ? ` v. ${docVolume},` : ''}` +
+        `${docPages ? ` p. ${docPages},` : ''}` + 
+        `${publicationDate ? ` ${publicationDate}.` : ''}` + 
         `${url ? ` Disponível em: ${url}.` : ''}` + // Ponto final já presente
         `${data ? ` Acessado em: ${data}.` : ''}`; // Ponto final já presente
 
@@ -407,10 +409,15 @@ function generateOfficialDocumentCitation() {
         function generateSiteCitation() {
             const authors = formatAuthors(document.getElementById("siteAuthors").value);
             const title = document.getElementById("siteTitle").value;
+            const site = document.getElementById("siteSite").value;
             const url = document.getElementById("siteURL").value;
-            const accessDate = document.getElementById("siteAccessDate").value;
+            const data = document.getElementById("siteAccessDate").value;
 
-            return `${authors}. ${title}. Disponível em: ${url}. Acesso em: ${accessDate}.`;
+            const citation = `${authors}. ${title}. <span class="bold-title">${site}</span>.` +
+        `${url ? ` Disponível em: ${url}.` : ''}` +
+        `${data ? ` Acessado em: ${data}.` : ''}`;
+            
+        return citation; //retorna citação
         }
         
         // Função para limpar o formulário
