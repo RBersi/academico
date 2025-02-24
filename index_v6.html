@@ -104,6 +104,8 @@
         <input type="text" id="articleVolume">
         <label for="articleNumber">Número:</label>
         <input type="text" id="articleNumber">
+        <label for="articlePages">Página inicial e final:</label>
+        <input type="text" id="articlePages">
         <label for="articleYear">Ano:</label>
         <input type="text" id="articleYear">
         <label for="articleDOI">DOI:</label>
@@ -308,6 +310,7 @@ function generateArticleCitation() {
     const volume = document.getElementById("articleVolume").value;
     const number = document.getElementById("articleNumber").value;
     const year = document.getElementById("articleYear").value;
+    const pages = document.getElementById("articlePages").value;
     const doi = document.getElementById("articleDOI").value;
     const url = document.getElementById("articleURL").value;
     const data = document.getElementById("articleAccessDate").value;
@@ -315,10 +318,11 @@ function generateArticleCitation() {
 const citation = `${authors}. ${title}. <span class="bold-title">${journal}</span>` +
   `${volume ? `, v. ${volume}` : ''}` +
   `${number ? `, n. ${number}` : ''}` +
+  `${pages ? `, p. ${pages}` : ''}` +
   `, ${year}.` +
-  `${doi ? `. DOI: ${doi}` : ''}` +
-   `${url ? `. Disponível em: ${url}.` : ''}` +
-    `${data ? `. Acessado em: ${data}.` : ''}`;
+  `${doi ? ` DOI: ${doi}.` : ''}` +
+   `${url ? ` Disponível em: ${url}.` : ''}` +
+    `${data ? ` Acessado em: ${data}.` : ''}`;
     return citation; // Retorna a citação
 }
 
