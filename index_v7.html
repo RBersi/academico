@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Citações ABNT</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+        .citation-output {
+            margin-top: 20px;
+            padding: 10px;
+            background: #e9ecef;
+            border-radius: 4px;
+            white-space: pre-wrap;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .bold-title {
+           font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gerador de Citações ABNT</h1>
+    <form id="citationForm">
+        <label for="documentType">Tipo de documento:</label>
+        <select id="documentType" required>
+            <option value="">Selecione...</option>
+            <option value="artigo">Artigo</option>
+            <option value="livro">Livro</option>
+            <option value="capitulo">Capítulo</option>
+            <option value="academico">Trabalho Acadêmico</option>
+            <option value="documentoOficial">Documento Oficial</option>
+            <option value="site">Site</option>
+        </select>
+        <div id="fieldsContainer"></div>
+        <div style="text-align: center;">
+        <button type="button" onclick="generateCitation()">Gerar Citação</button>
+        <button type="button" onclick="limpar()">Limpar</button>
+        <button type="button" onclick="resetForm()">Reiniciar</button>
+        </div>
+    </form>
+    <div id="citationOutput" class="citation-output"></div>
+    <div id="errorOutput" class="error"></div>
+
+    <!-- Templates for document fields -->
+    <div id="artigoFields" style="display:none">
+        <label for="articleAuthors">Autores (separados por vírgula):</label>
+        <input type="text" id="articleAuthors">
+        <label for="articleTitle">Título:</label>
+        <input type="text" id="articleTitle">
+        <label for="articleJournal">Revista:</label>
+        <input type="text" id="articleJournal">
+        <label for="articleVolume">Volume:</label>
+        <input type="text" id="articleVolume">
+        <label for="articleNumber">Número:</label>
+        <input type="text" id="articleNumber">
+        <label for="articlePages">Página inicial e final:</label>
+        <input type="text" id="articlePages">
+        <label for="articleYear">Ano:</label>
+        <input type="text" id="articleYear">
+        <label for="articleDOI">DOI:</label>
+        <input type="text" id="articleDOI">
+        <label for="articleURL">URL:</label>
+        <input type="text" id="articleURL">
+        <label for="articleAccessDate">Data de acesso (DD/MM/AAAA):</label>
+        <input type="text" id="articleAccessDate">
+    </div>
+    <div id="livroFields" style="display:none">
+        <label for="bookAuthors">Autores (separados por vírgula):</label>
+        <input type="text" id="bookAuthors">
+        <label for="bookTitle">Título do livro:</label>
+        <input type="text" id="bookTitle">
+        <label for="bookEdition">Edição:</label>
+        <input type="text" id="bookEdition">
+        <label for="bookVolume">Volume:</label>
+        <input type="text" id="bookVolume">
+        <label for="bookCity">Cidade:</label>
+        <input type="text" id="bookCity">
+        <label for="bookPublisher">Editora:</label>
+        <input type="text" id="bookPublisher">
+        <label for="bookYear">Ano:</label>
+        <input type="text" id="bookYear">
+        <label for="bookPages">Páginas:</label>
+        <input type="text" id="bookPages">
+        <label for="bookDOI">DOI:</label>
+        <input type="text" id="bookDOI">
+        <label for="bookURL">URL:</label>
+        <input type="text" id="bookURL">
+        <label for="bookAccessDate">Data de acesso (DD/MM/AAAA):</label>
+        <input type="text" id="bookAccessDate">
+    </div>
+    <div id="capituloFields" style="display:none">
+        <label for="chapterAuthors">Autores do capítulo (separados por vírgula):</label>
+        <input type="text" id="chapterAuthors">
+        <label for="chapterTitle">Título do capítulo:</label>
+        <input type="text" id="chapterTitle">
+        <label for="bookEditors">Organizadores do livro (separados por vírgula):</label>
+        <input type="text" id="bookEditors">
+        <label for="bookTitle">Título do livro:</label>
+        <input type="text" id="bookTitle">
+        <label for="bookEdition">Edição:</label>
+        <input type="text" id="bookEdition">
+        <label for="bookVolume">Volume:</label>
+        <input type="text" id="bookVolume">
+        <label for="bookCity">Cidade:</label>
+        <input type="text" id="bookCity">
+        <label for="bookPublisher">Editora:</label>
+        <input type="text" id="bookPublisher">
+        <label for="bookYear">Ano:</label>
+        <input type="text" id="bookYear">
+        <label for="bookPages">Páginas do capítulo (ex.: 10-20):</label>
+        <input type="text" id="bookPages">
+        <label for="bookDOI">DOI:</label>
+        <input type="text" id="bookDOI">
+        <label for="bookURL">URL:</label>
+        <input type="text" id="bookURL">
+        <label for="bookAccessDate">Data de acesso (DD/MM/AAAA):</label>
+        <input type="text" id="bookAccessDate">
+    </div>
+<div id="academicoFields" style="display:none">
+    <!-- Tipo/Grau do Trabalho -->
+    <label for="academicType">Tipo/gradu do trabalho:</label>
+    <select id="academicType" name="academicType">
+        <option value="">Selecione...</option>
+        <option value="TCC">Trabalho de conclusão de curso</option>
+        <option value="DISSERTACAO">Dissertação de mestrado</option>
+        <option value="TESE">Tese de doutorado</option>
+    </select>
+
+    <!-- Autor -->
+    <label for="academicAuthors">Autor:</label>
+    <input type="text" id="academicAuthors">
+
+    <!-- Título -->
+    <label for="academicTitle">Título:</label>
+    <input type="text" id="academicTitle">
+
+    <!-- Subtítulo -->
+    <label for="academicSubtitulo">Subtítulo:</label>
+    <input type="text" id="academicSubtitulo">
+
+    <!-- Data do Depósito -->
+    <label for="academicDataDeposito">Data do depósito:</label>
+    <input type="text" id="academicDataDeposito">
+
+    <!-- Páginas -->
+    <label for="academicPages">Páginas:</label>
+    <input type="text" id="academicPages">
+
+    <!-- Área de Formação -->
+    <label for="academicArea">Área de formação:</label>
+    <input type="text" id="academicArea">
+
+    <!-- Faculdade/Universidade -->
+    <label for="academicPublisher">Faculdade/Universidade:</label>
+    <input type="text" id="academicPublisher">
+
+    <!-- Cidade -->
+    <label for="academicCity">Cidade:</label>
+    <input type="text" id="academicCity">
+
+    <!-- Ano -->
+    <label for="academicYear">Ano:</label>
+    <input type="text" id="academicYear">
+
+    <!-- URL -->
+    <label for="academicURL">URL:</label>
+    <input type="text" id="academicURL">
+
+    <!-- Data de Acesso -->
+    <label for="academicAccessDate">Data de acesso (DD/MM/AAAA):</label>
+    <input type="text" id="academicAccessDate">
+</div>
+    <div id="documentoOficialFields" style="display:none">
+        <label for="officialAgency">Órgão responsável:</label>
+        <input type="text" id="officialAgency">
+        <label for="officialDocumentType">Tipo de documento (ex.: Portaria, Lei, Decreto):</label>
+        <input type="text" id="officialDocumentType">
+        <label for="officialDocumentNumber">Número do documento:</label>
+        <input type="text" id="officialDocumentNumber">
+        <label for="officialDocumentTitle">Título do documento:</label>
+        <input type="text" id="officialDocumentTitle">
+        <label for="officialDocumentSubtitle">Subtítulo/Súmula do documento:</label>
+        <input type="text" id="officialDocumentSubtitle">
+        <label for="officialDocumentCity">Local/Cidade de publicação:</label>
+        <input type="text" id="officialDocumentCity">
+        <label for="officialDocumentVolume">Volume:</label>
+        <input type="text" id="officialDocumentVolume">
+        <label for="officialDocumentPages">Página:</label>
+        <input type="text" id="officialDocumentPages">
+        <label for="officialPublicationDate">Data de publicação (DD/MM/AAAA):</label>
+        <input type="text" id="officialPublicationDate">
+        <label for="officialURL">URL:</label>
+        <input type="text" id="officialURL">
+        <label for="officialAccessDate">Data de acesso (DD/MM/AAAA):</label>
+        <input type="text" id="officialAccessDate">
+    </div>
+    <div id="siteFields" style="display:none">
+        <label for="siteAuthors">Autores (separados por vírgula):</label>
+        <input type="text" id="siteAuthors">
+        <label for="siteTitle">Título da página:</label>
+        <input type="text" id="siteTitle">
+        <label for="siteSite">Título do site:</label>
+        <input type="text" id="siteSite">
+        <label for="siteURL">URL:</label>
+        <input type="text" id="siteURL">
+        <label for="siteAccessDate">Data de acesso (DD/MM/AAAA):</label>
+        <input type="text" id="siteAccessDate">
+    </div>
+
+  <footer>
+    Desenvolvido por <a href="https://github.com/RBersi" target="_blank">Bersi</a>
+  </footer>
+    
+    <script>
+        // Função para formatar nomes de autores conforme ABNT
+        function formatAuthors(authorsString) {
+            if (!authorsString) return ""; // Retorna vazio se não houver autores
+            const authorsArray = authorsString.split(",").map(name => name.trim());
+            const formattedAuthors = authorsArray.map(author => {
+                const nameParts = author.split(" ");
+                if (nameParts.length === 1) {
+                    return nameParts[0].toUpperCase();
+                }
+                const lastName = nameParts.pop().toUpperCase();
+                return `${lastName}, ${nameParts.join(" ")}`;
+            });
+            return formattedAuthors.join("; ");
+        }
+
+// Função nomeada para carregar campos dinamicamente
+function loadDynamicFields() {
+    let selectedType = document.getElementById("documentType").value;
+    let fieldsContainer = document.getElementById("fieldsContainer");
+    fieldsContainer.innerHTML = "";  // Limpa campos anteriores
+    let fieldTemplate = document.getElementById(selectedType + "Fields");
+    if (fieldTemplate) {
+        fieldsContainer.innerHTML = fieldTemplate.innerHTML;
+    }
+}
+
+// Event listener usando a função nomeada
+document.getElementById("documentType").addEventListener("change", loadDynamicFields);
+
+// Função principal para gerar citação
+function generateCitation() {
+    let selectedType = document.getElementById("documentType").value;
+    let citation = "";
+    let error = "";
+    if (!selectedType) {
+        error = "Por favor, selecione um tipo de documento.";
+    } else {
+        switch (selectedType) {
+            case "artigo":
+                citation = generateArticleCitation();
+                break;
+            case "livro":
+                citation = generateBookCitation();
+                break;
+            case "capitulo":
+                citation = generateChapterCitation();
+                break;
+            case "academico":
+                citation = generateAcademicCitation();
+                break;
+            case "documentoOficial":
+                citation = generateOfficialDocumentCitation();
+                break;
+            case "site":
+                citation = generateSiteCitation();
+                break;
+            default:
+                error = "Tipo de documento ainda não implementado.";
+        }
+    }
+    // Mostrar resultado ou erro
+    document.getElementById("citationOutput").innerHTML = citation; // Alterado para innerHTML
+    document.getElementById("errorOutput").innerText = error;
+}
+
+// Função para gerar citação de artigo
+function generateArticleCitation() {
+    const authors = formatAuthors(document.getElementById("articleAuthors").value);
+    const title = document.getElementById("articleTitle").value;
+    const journal = document.getElementById("articleJournal").value;
+    const volume = document.getElementById("articleVolume").value;
+    const number = document.getElementById("articleNumber").value;
+    const year = document.getElementById("articleYear").value;
+    const pages = document.getElementById("articlePages").value;
+    const doi = document.getElementById("articleDOI").value;
+    const url = document.getElementById("articleURL").value;
+    const data = document.getElementById("articleAccessDate").value;
+
+const citation = `${authors}. ${title}. <span class="bold-title">${journal}</span>` +
+  `${volume ? `, v. ${volume}` : ''}` +
+  `${number ? `, n. ${number}` : ''}` +
+  `${pages ? `, p. ${pages}` : ''}` +
+  `, ${year}.` +
+  `${doi ? ` DOI: ${doi}.` : ''}` +
+   `${url ? ` Disponível em: ${url}.` : ''}` +
+    `${data ? ` Acessado em: ${data}.` : ''}`;
+    return citation; // Retorna a citação
+}
+
+function generateBookCitation() {
+    const authors = formatAuthors(document.getElementById("bookAuthors").value);
+    const title = document.getElementById("bookTitle").value;
+    const edition = document.getElementById("bookEdition").value;
+    const volume = document.getElementById("bookVolume").value;
+    const city = document.getElementById("bookCity").value;
+    const publisher = document.getElementById("bookPublisher").value;
+    const year = document.getElementById("bookYear").value;
+    const pages = document.getElementById("bookPages").value;
+    const doi = document.getElementById("bookDOI").value;
+    const url = document.getElementById("bookURL").value;
+    const data = document.getElementById("bookAccessDate").value;
+
+    const citation = `${authors}. <span class="bold-title">${title}</span>.` +
+  `${edition ? ` ${edition} ed.` : ''}` +
+  `${volume ? `, v. ${volume}.` : ''}` +
+  `${city ? ` ${city}` : ''}` +
+  `${publisher ? `: ${publisher}` : ''}` +
+  `, ${year}.` +
+  `${pages ? ` ${pages} p.` : ''}` +
+  `${doi ? ` DOI: ${doi}.` : ''}` +
+   `${url ? ` Disponível em: ${url}.` : ''}` +
+    `${data ? ` Acessado em: ${data}.` : ''}`;
+
+    return citation; // Retorna a citação
+    
+}
+
+function generateChapterCitation() {
+    const chapterAuthors = formatAuthors(document.getElementById("chapterAuthors").value);
+    const chapterTitle = document.getElementById("chapterTitle").value;
+    const bookEditors = formatAuthors(document.getElementById("bookEditors").value);
+    const bookTitle = document.getElementById("bookTitle").value;
+    const edition = document.getElementById("bookEdition").value;
+    const volume = document.getElementById("bookVolume").value;
+    const city = document.getElementById("bookCity").value;
+    const publisher = document.getElementById("bookPublisher").value;
+    const year = document.getElementById("bookYear").value;
+    const pages = document.getElementById("bookPages").value;
+    const doi = document.getElementById("bookDOI").value;
+    const url = document.getElementById("bookURL").value;
+    const data = document.getElementById("bookAccessDate").value;
+
+    const citation = `${chapterAuthors}. ${chapterTitle}. In: ${bookEditors} (Org.). <span class="bold-title">${bookTitle}</span>` +
+        `${edition ? `. ${edition} ed.` : ''}` + // Ponto final adicionado após "ed"
+        `${volume ? `, v. ${volume}` : ''}` +
+        `${city ? `. ${city}` : ''}` +
+        `${publisher ? `: ${publisher}` : ''}` +
+        `, ${year}` +
+        `${pages ? `. p. ${pages}.` : '.'}` + // Ponto final garantido aqui
+        `${doi ? ` DOI: ${doi}.` : ''}` + // Ponto final adicionado após o DOI
+        `${url ? ` Disponível em: ${url}.` : ''}` + // Ponto final já presente
+        `${data ? ` Acessado em: ${data}.` : ''}`; // Ponto final já presente
+
+    return citation; // Retorna a citação
+}
+
+function generateOfficialDocumentCitation() {
+    const agency = document.getElementById("officialAgency").value.toUpperCase();
+    const docType = document.getElementById("officialDocumentType").value;
+    const docNumber = document.getElementById("officialDocumentNumber").value;
+    const docTitle = document.getElementById("officialDocumentTitle").value;
+    const docSubtitle = document.getElementById("officialDocumentSubtitle").value;
+    const docCity = document.getElementById("officialDocumentCity").value;
+    const docVolume = document.getElementById("officialDocumentVolume").value;
+    const docPages = document.getElementById("officialDocumentPages").value;
+    const publicationDate = document.getElementById("officialPublicationDate").value;
+    const url = document.getElementById("officialURL").value;
+    const data = document.getElementById("officialAccessDate").value;
+
+    // Corrigindo o uso de `bookTitle` para `docTitle` e removendo `year`
+    const citation = `${agency}. ${docType} nº ${docNumber}, de ${publicationDate}. <span class="bold-title">${docTitle}</span>` +
+        `${docSubtitle ? `: ${docSubtitle}.` : '.'}` + 
+        `${docCity ? ` ${docCity},` : ''}` +
+        `${docVolume ? ` v. ${docVolume},` : ''}` +
+        `${docPages ? ` p. ${docPages},` : ''}` + 
+        `${publicationDate ? ` ${publicationDate}.` : ''}` + 
+        `${url ? ` Disponível em: ${url}.` : ''}` + // Ponto final já presente
+        `${data ? ` Acessado em: ${data}.` : ''}`; // Ponto final já presente
+
+    return citation; // Retorna a citação
+}
+        
+
+        function generateSiteCitation() {
+            const authors = formatAuthors(document.getElementById("siteAuthors").value);
+            const title = document.getElementById("siteTitle").value;
+            const site = document.getElementById("siteSite").value;
+            const url = document.getElementById("siteURL").value;
+            const data = document.getElementById("siteAccessDate").value;
+
+            const citation = `${authors}. ${title}. <span class="bold-title">${site}</span>.` +
+        `${url ? ` Disponível em: ${url}.` : ''}` +
+        `${data ? ` Acessado em: ${data}.` : ''}`;
+            
+        return citation; //retorna citação
+        }
+       
+       // Função para limpar o formulário
+function resetForm() {
+    document.getElementById("citationForm").reset(); // Reseta o formulário
+    document.getElementById("citationOutput").innerHTML = ""; // Limpa a saída de citação
+    document.getElementById("errorOutput").innerText = ""; // Limpa mensagens de erro
+
+    // Chama a FUNÇÃO 1 para recarregar os campos dinâmicos
+    loadDynamicFields();
+}
+       
+// Função para limpar todos os campos do formulário, exceto o tipo de documento
+function limpar() {
+    // Salva o valor atual do campo "Tipo de documento"
+    const documentType = document.getElementById("documentType").value;
+
+    // Reseta o formulário
+    document.getElementById("citationForm").reset();
+
+    // Restaura o valor do campo "Tipo de documento"
+    document.getElementById("documentType").value = documentType;
+
+    // Limpa a saída da citação e mensagens de erro
+    document.getElementById("citationOutput").innerHTML = "";
+    document.getElementById("errorOutput").innerText = "";
+}
+        
+    </script>
+</body>
+</html>
