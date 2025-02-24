@@ -261,25 +261,26 @@
         <input type="text" id="siteAccessDate">
     </div>
 
-  <footer>
+<footer>
     Desenvolvido por <a href="https://github.com/RBersi" target="_blank">Bersi</a>
-  </footer>
+</footer>
     
-    <script>
-        // Função para formatar nomes de autores conforme ABNT
-        function formatAuthors(authorsString) {
-            if (!authorsString) return ""; // Retorna vazio se não houver autores
-            const authorsArray = authorsString.split(",").map(name => name.trim());
-            const formattedAuthors = authorsArray.map(author => {
-                const nameParts = author.split(" ");
-                if (nameParts.length === 1) {
-                    return nameParts[0].toUpperCase();
-                }
-                const lastName = nameParts.pop().toUpperCase();
-                return `${lastName}, ${nameParts.join(" ")}`;
-            });
-            return formattedAuthors.join("; ");
-        }
+<script>
+// Observa mudanças no formulário
+const observer = new MutationObserver(function (mutations) {
+    mutations.forEach(function (mutation) {
+        mutation.addedNodes.forEach(function (node) {
+            if (node.tagName === 'INPUT' || node.tagName === 'TEXTAREA') {
+                node.addEventListener('input', function () {
+                    node.value = node.value.trimEnd();
+                });
+            }
+        });
+    });
+});
+
+// Inicia o observador no formulário
+observer.observe(document.getElementById('citationForm'), { childList: true, subtree: true });    
 
 // Função nomeada para carregar campos dinamicamente
 function loadDynamicFields() {
@@ -295,6 +296,21 @@ function loadDynamicFields() {
 // Event listener usando a função nomeada
 document.getElementById("documentType").addEventListener("change", loadDynamicFields);
 
+// Função para formatar nomes de autores conforme ABNT
+function formatAuthors(authorsString) {
+            if (!authorsString) return ""; // Retorna vazio se não houver autores
+            const authorsArray = authorsString.split(",").map(name => name.trim());
+            const formattedAuthors = authorsArray.map(author => {
+                const nameParts = author.split(" ");
+                if (nameParts.length === 1) {
+                    return nameParts[0].toUpperCase();
+                }
+                const lastName = nameParts.pop().toUpperCase();
+                return `${lastName}, ${nameParts.join(" ")}`;
+            });
+            return formattedAuthors.join("; ");
+        }
+        
 // Função principal para gerar citação
 function generateCitation() {
     let selectedType = document.getElementById("documentType").value;
