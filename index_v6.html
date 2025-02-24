@@ -167,7 +167,14 @@
         <label for="bookAccessDate">Data de acesso (DD/MM/AAAA):</label>
         <input type="text" id="bookAccessDate">
     </div>
-        <div id="academicoFields" style="display:none">
+    <div id="academicoFields" style="display:none">
+        <label for="academicType">Tipo/gradu do trabalho:</label>
+        <select id="academicType" name="academicType">
+          <option value="">Selecione...</option>
+          <option value="TCC">Trabalho de conclusão de curso</option>
+          <option value="DISSERTACAO">Dissertação de mestrado</option>
+          <option value="TESE">Tese de doutorado</option>
+        </select>
         <label for="academicAuthors">Autor:</label>
         <input type="text" id="academicAuthors">
         <label for="academicTitle">Título:</label>
@@ -178,13 +185,7 @@
         <input type="text" id="academicDataDeposito">
         <label for="academicPages">Páginas:</label>
         <input type="text" id="academicPages">
-        <label for="academicType">Tipo/gradu do trabalho:</label>
-        <select id="academicType" name="academicType">
-          <option value="">Selecione...</option>
-          <option value="TCC">Trabalho de conclusão de curso</option>
-          <option value="DISSERTACAO">Dissertação de mestrado</option>
-          <option value="TESE">Tese de doutorado</option>
-        </select>
+
         <label for="academicArea">Área de formação:</label>
         <input type="text" id="academicArea">
         <label for="academicPublisher">Faculdade/Universidade:</label>
