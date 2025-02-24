@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import re
 
 # Caminho para o arquivo de entrada (contendo os códigos da página web)
