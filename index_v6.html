@@ -335,16 +335,16 @@ function generateBookCitation() {
     const url = document.getElementById("bookURL").value;
     const data = document.getElementById("bookAccessDate").value;
 
-    const citation = `${authors}. <span class="bold-title">${title}</span>` +
-  `${edition ? `. ${edition} ed.` : ''}` +
-  `${volume ? `, v. ${volume}` : ''}` +
-  `${city ? `. ${city}` : ''}` +
+    const citation = `${authors}. <span class="bold-title">${title}</span>.` +
+  `${edition ? ` ${edition} ed.` : ''}` +
+  `${volume ? `, v. ${volume}.` : ''}` +
+  `${city ? ` ${city}` : ''}` +
   `${publisher ? `: ${publisher}` : ''}` +
   `, ${year}.` +
-  `${pages ? `. ${pages} p.` : ''}` +
-  `${doi ? `. DOI: ${doi}` : ''}` +
-   `${url ? `. Disponível em: ${url}.` : ''}` +
-    `${data ? `. Acessado em: ${data}.` : ''}`;
+  `${pages ? ` ${pages} p.` : ''}` +
+  `${doi ? ` DOI: ${doi}.` : ''}` +
+   `${url ? ` Disponível em: ${url}.` : ''}` +
+    `${data ? ` Acessado em: ${data}.` : ''}`;
 
     return citation; // Retorna a citação
     
