@@ -71,7 +71,6 @@
         .bold-title {
             font-weight: bold;
         }
-
         /* Novos estilos para o cabeçalho */
         .header {
             display: flex;
@@ -106,7 +105,6 @@
         .header .historico-link:hover {
             text-decoration: underline;
         }
-
         /* Estilo específico para a lista de histórico */
         #listaHistorico {
             list-style-type: none;
@@ -132,54 +130,47 @@
             <a href="index.html" class="historico-link">Voltar ao Gerador</a>
         </div>
     </header>
-
     <!-- Conteúdo principal -->
     <h1>Histórico de Citações</h1>
     <ul id="listaHistorico"></ul>
-
     <!-- Rodapé -->
-<footer>
-    Desenvolvido por <a href="https://github.com/RBersi" target="_blank">Bersi</a> - 2025
-</footer>
-
+    <footer>
+        Desenvolvido por <a href="https://github.com/RBersi" target="_blank">Bersi</a> - 2025
+    </footer>
     <script>
         // Função para carregar o histórico
-function carregarHistorico() {
-    const lista = document.getElementById('listaHistorico');
-    lista.innerHTML = ''; // Limpa a lista antes de atualizar
+        function carregarHistorico() {
+            const lista = document.getElementById('listaHistorico');
+            lista.innerHTML = ''; // Limpa a lista antes de atualizar
+            try {
+                const historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
+                
+                // Validação para garantir que o histórico é um array
+                if (!Array.isArray(historico)) {
+                    throw new Error("O histórico não é um array válido.");
+                }
 
-    // Tenta carregar o histórico do localStorage
-    let historico = localStorage.getItem('historicoCitations');
+                // Filtra citações duplicadas
+                const historicoUnico = [...new Set(historico)];
 
-    // Verifica se o histórico existe e não é nulo
-    if (historico) {
-        try {
-            historico = JSON.parse(historico); // Converte o JSON para array
-            if (Array.isArray(historico)) {
-                historico.forEach(citacao => {
-                    console.log("Citação carregada:", citacao); // Debug: verifica cada citação
-                    if (citacao) { // Garante que a citação não é nula
-                        const li = document.createElement('li');
-                        li.textContent = citacao; // Define o texto do item da lista
-                        lista.appendChild(li);
-                    }
-                });
-            } else {
-                console.error("O histórico não é um array válido.");
+                if (historicoUnico.length > 0) {
+                    historicoUnico.forEach(citacao => {
+                        if (citacao) { // Garante que a citação não é nula
+                            const li = document.createElement('li');
+                            li.textContent = citacao;
+                            lista.appendChild(li);
+                        }
+                    });
+                } else {
+                    throw new Error("Histórico vazio.");
+                }
+            } catch (error) {
+                console.error("Erro ao carregar o histórico:", error.message);
+                const li = document.createElement('li');
+                li.textContent = `Erro ao carregar o histórico: ${error.message}`;
+                lista.appendChild(li);
             }
-        } catch (error) {
-            console.error("Erro ao processar o histórico:", error);
         }
-    } else {
-        console.warn("Nenhum histórico encontrado no localStorage.");
-        const li = document.createElement('li');
-        li.textContent = "Nenhuma citação disponível no histórico.";
-        lista.appendChild(li);
-    }
-}
-
-// Carregar histórico ao abrir a página
-window.onload = carregarHistorico;
 
         // Carregar histórico ao abrir a página
         window.onload = carregarHistorico;
