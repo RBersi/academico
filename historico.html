@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Histórico de Citações</title>
-<style>
-    body {
+    <style>
+        /* Estilos existentes */
+        body {
             font-family: Arial, sans-serif;
             margin: 20px;
             padding: 0;
@@ -68,8 +69,10 @@
             margin-top: 10px;
         }
         .bold-title {
-           font-weight: bold;
+            font-weight: bold;
         }
+
+        /* Novos estilos para o cabeçalho */
         .header {
             display: flex;
             justify-content: space-between;
@@ -103,25 +106,55 @@
         .header .historico-link:hover {
             text-decoration: underline;
         }
-</style>
+
+        /* Estilo específico para a lista de histórico */
+        #listaHistorico {
+            list-style-type: none;
+            padding: 0;
+        }
+        #listaHistorico li {
+            background-color: #fff;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+    </style>
 </head>
 <body>
-    <h2>Histórico de Citações</h2>
+    <!-- Cabeçalho -->
+    <header class="header">
+        <div class="header-left">
+            <img src="favicon.png" alt="Logo" class="header-logo">
+            <span class="header-title">Gerador de Citações ABNT</span>
+        </div>
+        <div class="header-right">
+            <a href="index.html" class="historico-link">Voltar ao Gerador</a>
+        </div>
+    </header>
+
+    <!-- Conteúdo principal -->
+    <h1>Histórico de Citações</h1>
     <ul id="listaHistorico"></ul>
 
-    <script>
- function carregarHistorico() {
-    const historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
-    const lista = document.getElementById('listaHistorico');
-    lista.innerHTML = ''; // Limpa a lista antes de atualizar
+    <!-- Rodapé -->
+    <footer>
+        Desenvolvido por Bersi com IA
+    </footer>
 
-    historico.forEach(citacao => {
-        console.log("Citação carregada:", citacao); // Verifica o conteúdo de cada citação
-        const li = document.createElement('li');
-        li.textContent = citacao; // Define o texto do item da lista
-        lista.appendChild(li);
-    });
-}
+    <script>
+        // Função para carregar o histórico
+        function carregarHistorico() {
+            const historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
+            const lista = document.getElementById('listaHistorico');
+            lista.innerHTML = ''; // Limpa a lista antes de atualizar
+            historico.forEach(citacao => {
+                console.log("Citação carregada:", citacao); // Verifica o conteúdo de cada citação
+                const li = document.createElement('li');
+                li.textContent = citacao; // Define o texto do item da lista
+                lista.appendChild(li);
+            });
+        }
 
         // Carregar histórico ao abrir a página
         window.onload = carregarHistorico;
