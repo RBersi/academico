@@ -142,7 +142,7 @@
     <footer>
         Desenvolvido por <a href="https://github.com/RBersi" target="_blank">Bersi</a> - 2025
     </footer>
-   <script>
+<script>
 document.addEventListener("DOMContentLoaded", function() {
     function carregarHistorico() {
         const lista = document.getElementById('listaHistorico');
@@ -156,12 +156,15 @@ document.addEventListener("DOMContentLoaded", function() {
         
         historico.forEach((citacao, index) => {
             const li = document.createElement('li');
-            li.innerHTML = `${citacao} `;
-            
+            li.textContent = citacao;
+
             const btnExcluir = document.createElement('button');
             btnExcluir.textContent = 'Excluir';
-            btnExcluir.addEventListener('click', function() {
-                removerCitacao(index);
+            btnExcluir.setAttribute('data-index', index); // Adiciona o índice como um atributo
+
+            btnExcluir.addEventListener('click', function(event) {
+                const indexToRemove = event.target.getAttribute('data-index');
+                removerCitacao(indexToRemove);
             });
 
             li.appendChild(btnExcluir);
@@ -180,7 +183,7 @@ document.addEventListener("DOMContentLoaded", function() {
         localStorage.removeItem('historicoCitations');
         carregarHistorico();
     });
-    
+
     carregarHistorico();
 });
 </script>
