@@ -266,22 +266,20 @@
 </footer>
     
 <script>
-// Observa mudanças no formulário
-const observer = new MutationObserver(function (mutations) {
-    mutations.forEach(function (mutation) {
-        mutation.addedNodes.forEach(function (node) {
-            if (node.tagName === 'INPUT' || node.tagName === 'TEXTAREA') {
-                node.addEventListener('input', function () {
-                    node.value = node.value.trim(); // Remove espaços no início e no final
-                });
-            }
-        });
+/*
+    // Função remove espaços extras apenas no envio do formulário
+document.getElementById('citationForm').addEventListener('submit', function (event) {
+    // Previne o comportamento padrão de envio do formulário (opcional, dependendo do caso)
+    event.preventDefault();
+    // Seleciona todos os campos de entrada e textarea dentro do formulário
+    const inputs = document.querySelectorAll('#citationForm input, #citationForm textarea');
+    // Itera sobre cada campo e remove os espaços extras no início e no final
+    inputs.forEach(function (input) {
+        input.value = input.value.trim();
     });
 });
-
-// Inicia o observador no formulário
-observer.observe(document.getElementById('citationForm'), { childList: true, subtree: true });
-
+*/
+    
 // Função nomeada para carregar campos dinamicamente
 function loadDynamicFields() {
     let selectedType = document.getElementById("documentType").value;
