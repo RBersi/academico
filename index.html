@@ -129,7 +129,7 @@
         </select>
         <div id="fieldsContainer"></div>
         <div style="text-align: center;">
-        <button type="button" onclick="salvarCitacao(generateCitation())">Gerar Citação</button>
+        <button type="button" onclick="salvarCitacaoNoHistorico(generateCitation())">Gerar Citação</button> 
         <button type="button" onclick="limpar()">Limpar</button>
         <button type="button" onclick="resetForm()">Reiniciar</button>
         </div>
@@ -593,13 +593,12 @@ function generateOfficialDocumentCitation() {
         }
      
      
-function salvarCitacao(citacao) {
+function salvarCitacaoNoHistorico(citacao) {
     let historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
-    historico.push(citacao); // Adiciona a nova citação ao array
-    localStorage.setItem('historicoCitations', JSON.stringify(historico)); // Salva no localStorage
+    historico.push(citacao);
+    localStorage.setItem('historicoCitations', JSON.stringify(historico));
 }
-
-     
+       
     
        // Função para limpar o formulário
 function resetForm() {
