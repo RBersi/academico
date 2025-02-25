@@ -399,6 +399,7 @@ function generateCitation() {
     let selectedType = document.getElementById("documentType").value;
     let citation = "";
     let error = "";
+
     if (!selectedType) {
         error = "Por favor, selecione um tipo de documento.";
     } else {
@@ -425,13 +426,19 @@ function generateCitation() {
                 error = "Tipo de documento ainda não implementado.";
         }
     }
-    // Mostrar resultado ou erro
-    document.getElementById("citationOutput").innerHTML = citation; // Alterado para innerHTML
-    document.getElementById("errorOutput").innerText = error;
 
-    return citation;
-
+    // Exibir erro se existir
+    if (error) {
+        document.getElementById("errorOutput").innerText = error;
+        document.getElementById("citationOutput").innerText = ""; // Limpar saída anterior
+        return null; // Retornar null em caso de erro
+    } else {
+        document.getElementById("errorOutput").innerText = ""; // Limpar erro anterior
+        document.getElementById("citationOutput").innerHTML = citation; // Exibir citação
+        return citation; // Retornar a citação gerada
+    }
 }
+
 
 
 // Função para gerar citação de artigo
