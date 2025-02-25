@@ -133,65 +133,43 @@
     <!-- Conteúdo principal -->
     <h1>Histórico de Citações</h1>
     <ul id="listaHistorico"></ul>
-    <!-- Rodapé -->
+    <div style="text-align: center;">
+    <button id="limparHistorico">Limpar Histórico</button>
+    </div>div    
 <footer>
     Desenvolvido por <a href="https://github.com/RBersi" target="_blank">Bersi</a> - 2025
 </footer>
  <script>
-    // Função para carregar o histórico
-   function carregarHistorico() {
-    const lista = document.getElementById('listaHistorico');
-    lista.innerHTML = ''; // Limpa a lista antes de atualizar
-
-    try {
-        // Obtém o histórico do localStorage
-        const historicoRaw = localStorage.getItem('historicoCitations');
-
-        // Verifica se o histórico existe
-        if (!historicoRaw) {
-            throw new Error("Nenhum histórico encontrado.");
+ function carregarHistorico() {
+            const lista = document.getElementById('listaHistorico');
+            lista.innerHTML = '';
+            const historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
+            
+            if (historico.length === 0) {
+                lista.innerHTML = '<li>Histórico vazio.</li>';
+                return;
+            }
+            
+            historico.forEach((citacao, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `${citacao} <button onclick="removerCitacao(${index})">Excluir</button>`;
+                lista.appendChild(li);
+            });
         }
-
-        // Tenta converter o histórico para JSON
-        let historico;
-        try {
-            historico = JSON.parse(historicoRaw);
-        } catch (parseError) {
-            throw new Error("Erro ao processar o histórico. O formato está inválido.");
+        
+        function removerCitacao(index) {
+            let historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
+            historico.splice(index, 1);
+            localStorage.setItem('historicoCitations', JSON.stringify(historico));
+            carregarHistorico();
         }
-
-        // Verifica se o histórico é um array
-        if (!Array.isArray(historico)) {
-            throw new Error("O histórico não é um array válido.");
-        }
-
-        // Remove valores inválidos (como null ou strings vazias)
-        const historicoFiltrado = historico.filter(item => item && typeof item === 'string');
-
-        // Remove duplicatas
-        const historicoUnico = Array.from(new Set(historicoFiltrado));
-
-        // Verifica se há citações no histórico
-        if (historicoUnico.length === 0) {
-            throw new Error("Histórico vazio.");
-        }
-
-        // Renderiza as citações
-        historicoUnico.forEach(citacao => {
-            const li = document.createElement('li');
-            li.innerHTML = citacao; // Preserva a formatação HTML
-            lista.appendChild(li);
+        
+        document.getElementById('limparHistorico').addEventListener('click', () => {
+            localStorage.removeItem('historicoCitations');
+            carregarHistorico();
         });
-    } catch (error) {
-        console.error("Erro ao carregar o histórico:", error.message);
-        const li = document.createElement('li');
-        li.textContent = `Erro ao carregar o histórico: ${error.message}`;
-        lista.appendChild(li);
-    }
-}
-
-    // Carregar histórico ao abrir a página
-    window.onload = carregarHistorico;
+        
+        window.onload = carregarHistorico;
 </script>
 </body>
 </html>
