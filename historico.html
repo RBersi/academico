@@ -115,9 +115,6 @@
             padding: 10px;
             border-radius: 4px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
         .container {
             text-align: center;
@@ -139,9 +136,9 @@
     <div class="container">
         <button id="limparHistorico">Limpar Histórico</button>
     </div>
-    <footer>
-        Desenvolvido por <a href="https://github.com/RBersi" target="_blank">Bersi</a> - 2025
-    </footer>
+<footer>
+    Desenvolvido por <a href="https://github.com/RBersi" target="_blank">Bersi</a> - 2025
+</footer>
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     function carregarHistorico() {
@@ -154,29 +151,11 @@ document.addEventListener("DOMContentLoaded", function() {
             return;
         }
         
-        historico.forEach((citacao, index) => {
+        historico.forEach((citacao) => {
             const li = document.createElement('li');
             li.textContent = citacao;
-
-            const btnExcluir = document.createElement('button');
-            btnExcluir.textContent = 'Excluir';
-            btnExcluir.setAttribute('data-index', index); // Adiciona o índice como um atributo
-
-            btnExcluir.addEventListener('click', function(event) {
-                const indexToRemove = event.target.getAttribute('data-index');
-                removerCitacao(indexToRemove);
-            });
-
-            li.appendChild(btnExcluir);
             lista.appendChild(li);
         });
-    }
-    
-    function removerCitacao(index) {
-        let historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
-        historico.splice(index, 1);
-        localStorage.setItem('historicoCitations', JSON.stringify(historico));
-        carregarHistorico();
     }
     
     document.getElementById('limparHistorico').addEventListener('click', () => {
