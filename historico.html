@@ -157,12 +157,12 @@
             try {
                 historico = JSON.parse(historicoRaw);
             } catch (parseError) {
-                throw new Error("Erro ao processar o histórico. O formato está inválido.");
+                throw new Error("O formato está inválido.");
             }
 
             // Verifica se o histórico é um array
             if (!Array.isArray(historico)) {
-                throw new Error("O histórico não é um array válido.");
+                throw new Error("O histórico não é válido.");
             }
 
             // Remove valores inválidos (como null ou strings vazias)
