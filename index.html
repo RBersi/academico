@@ -594,8 +594,19 @@ function generateOfficialDocumentCitation() {
      
      
 function salvarCitacaoNoHistorico(citacao) {
+    // Verifica se a citação é válida
+    if (!citacao || typeof citacao !== 'string') {
+        console.error("Citação inválida:", citacao);
+        return;
+    }
+
+    // Obtém o histórico atual do localStorage
     let historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
-    historico.push(citacao); // Adiciona a nova citação
+
+    // Adiciona a nova citação ao histórico
+    historico.push(citacao);
+
+    // Salva o histórico atualizado no localStorage
     localStorage.setItem('historicoCitations', JSON.stringify(historico));
 }
        
