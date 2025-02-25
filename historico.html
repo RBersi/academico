@@ -71,41 +71,39 @@
         .bold-title {
             font-weight: bold;
         }
-        /* Novos estilos para o cabeçalho */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: white; /* Fundo branco */
-            color: black; /* Texto preto */
-            padding: 10px 20px; /* Espaçamento interno */
-            border-bottom: 1px solid #ccc; /* Linha fina na parte inferior */
-            margin-bottom: 20px; /* Espaçamento abaixo do cabeçalho */
+            background-color: white;
+            color: black;
+            padding: 10px 20px;
+            border-bottom: 1px solid #ccc;
+            margin-bottom: 20px;
         }
         .header-left {
             display: flex;
             align-items: center;
         }
         .header-logo {
-            width: 25px; /* Diminuído o tamanho do favicon */
+            width: 25px;
             height: 25px;
             margin-right: 10px;
         }
         .header-title {
-            font-size: 18px; /* Tamanho maior para o título */
-            font-weight: normal; /* Sem negrito */
+            font-size: 18px;
+            font-weight: normal;
         }
         .header .historico-link {
             text-decoration: none;
-            color: #007bff; /* Cor azul para o link */
-            font-size: 14px; /* Tamanho menor para o link */
-            font-weight: normal; /* Sem negrito */
+            color: #007bff;
+            font-size: 14px;
+            font-weight: normal;
             cursor: pointer;
         }
         .header .historico-link:hover {
             text-decoration: underline;
         }
-        /* Estilo específico para a lista de histórico */
         #listaHistorico {
             list-style-type: none;
             padding: 0;
@@ -120,7 +118,6 @@
     </style>
 </head>
 <body>
-    <!-- Cabeçalho -->
     <header class="header">
         <div class="header-left">
             <img src="favcon.png" alt="Logo" class="header-logo">
@@ -130,7 +127,6 @@
             <a href="index.html" class="historico-link">Voltar ao Gerador</a>
         </div>
     </header>
-    <!-- Conteúdo principal -->
     <h1>Histórico de Citações</h1>
     <ul id="listaHistorico"></ul>
     <div style="text-align: center;">
@@ -139,37 +135,39 @@
 <footer>
     Desenvolvido por <a href="https://github.com/RBersi" target="_blank">Bersi</a> - 2025
 </footer>
- <script>
-function carregarHistorico() {
-            const lista = document.getElementById('listaHistorico');
-            lista.innerHTML = '';
-            const historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
-            
-            if (historico.length === 0) {
-                lista.innerHTML = '<li>Histórico vazio.</li>';
-                return;
-            }
-            
-            historico.forEach((citacao, index) => {
-                const li = document.createElement('li');
-                li.innerHTML = `${citacao} <button onclick="removerCitacao(${index})">Excluir</button>`;
-                lista.appendChild(li);
-            });
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    function carregarHistorico() {
+        const lista = document.getElementById('listaHistorico');
+        lista.innerHTML = '';
+        const historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
+        
+        if (historico.length === 0) {
+            lista.innerHTML = '<li>Histórico vazio.</li>';
+            return;
         }
         
-        function removerCitacao(index) {
-            let historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
-            historico.splice(index, 1);
-            localStorage.setItem('historicoCitations', JSON.stringify(historico));
-            carregarHistorico();
-        }
-        
-        document.getElementById('limparHistorico').addEventListener('click', () => {
-            localStorage.removeItem('historicoCitations');
-            carregarHistorico();
+        historico.forEach((citacao, index) => {
+            const li = document.createElement('li');
+            li.innerHTML = `${citacao} <button onclick="removerCitacao(${index})">Excluir</button>`;
+            lista.appendChild(li);
         });
-        
-        window.onload = carregarHistorico;
+    }
+    
+    function removerCitacao(index) {
+        let historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
+        historico.splice(index, 1);
+        localStorage.setItem('historicoCitations', JSON.stringify(historico));
+        carregarHistorico();
+    }
+    
+    document.getElementById('limparHistorico').addEventListener('click', () => {
+        localStorage.removeItem('historicoCitations');
+        carregarHistorico();
+    });
+    
+    carregarHistorico();
+});
 </script>
 </body>
 </html>
