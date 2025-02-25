@@ -134,36 +134,52 @@
     <h1>Histórico de Citações</h1>
     <ul id="listaHistorico"></ul>
     <!-- Rodapé -->
-    <footer>
-        Desenvolvido por <a href="https://github.com/RBersi" target="_blank">Bersi</a> - 2025
-    </footer>
+<footer>
+    Desenvolvido por <a href="https://github.com/RBersi" target="_blank">Bersi</a> - 2025
+</footer>
     <script>
         // Função para carregar o histórico
         function carregarHistorico() {
             const lista = document.getElementById('listaHistorico');
             lista.innerHTML = ''; // Limpa a lista antes de atualizar
             try {
-                const historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
+                // Obtém o histórico do localStorage
+                const historicoRaw = localStorage.getItem('historicoCitations');
                 
-                // Validação para garantir que o histórico é um array
+                // Verifica se o histórico existe
+                if (!historicoRaw) {
+                    throw new Error("Nenhum histórico encontrado.");
+                }
+
+                // Tenta converter o histórico para JSON
+                let historico;
+                try {
+                    historico = JSON.parse(historicoRaw);
+                } catch (parseError) {
+                    throw new Error("Erro ao processar o histórico. O formato está inválido.");
+                }
+
+                // Verifica se o histórico é um array
                 if (!Array.isArray(historico)) {
                     throw new Error("O histórico não é um array válido.");
                 }
 
-                // Filtra citações duplicadas
+                // Remove duplicatas
                 const historicoUnico = [...new Set(historico)];
 
-                if (historicoUnico.length > 0) {
-                    historicoUnico.forEach(citacao => {
-                        if (citacao) { // Garante que a citação não é nula
-                            const li = document.createElement('li');
-                            li.textContent = citacao;
-                            lista.appendChild(li);
-                        }
-                    });
-                } else {
+                // Verifica se há citações no histórico
+                if (historicoUnico.length === 0) {
                     throw new Error("Histórico vazio.");
                 }
+
+                // Renderiza as citações
+                historicoUnico.forEach(citacao => {
+                    if (citacao) { // Garante que a citação não é nula
+                        const li = document.createElement('li');
+                        li.textContent = citacao;
+                        lista.appendChild(li);
+                    }
+                });
             } catch (error) {
                 console.error("Erro ao carregar o histórico:", error.message);
                 const li = document.createElement('li');
