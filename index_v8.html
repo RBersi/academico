@@ -469,6 +469,46 @@ function generateChapterCitation() {
     return citation; // Retorna a citação
 }
 
+function generateAcademicCitation() {
+    // Obtenção dos valores dos campos do formulário
+    const academicType = document.getElementById("academicType").value.trim();
+    const authors = formatAuthors(document.getElementById("academicAuthors").value.trim());
+    const title = document.getElementById("academicTitle").value.trim();
+    const subtitle = document.getElementById("academicSubtitulo").value.trim();
+    const depositDate = document.getElementById("academicDataDeposito").value.trim();
+    const pages = document.getElementById("academicPages").value.trim();
+    const area = document.getElementById("academicArea").value.trim();
+    const publisher = document.getElementById("academicPublisher").value.trim();
+    const city = document.getElementById("academicCity").value.trim();
+    const year = document.getElementById("academicYear").value.trim();
+    const url = document.getElementById("academicURL").value.trim();
+    const accessDate = document.getElementById("academicAccessDate").value.trim();
+
+    // Condição para o tipo/grau do trabalho
+    let typeText = "";
+    if (academicType === "TCC") {
+        typeText = "Trabalho de Conclusão de Curso (";
+    } else if (academicType === "DISSERTACAO") {
+        typeText = "Dissertação (Mestrado em ";
+    } else if (academicType === "TESE") {
+        typeText = "Tese (Doutorado em ";
+    }
+
+    // Montagem da citação seguindo a ordem ABNT
+    const citation = `${authors}. <span class="bold-title">${title}</span>` +
+        `${subtitle ? `: ${subtitle}.` : '.'}.` +
+        `${depositDate ? ` ${depositDate}.` : ''}` +
+        `${pages ? ` ${pages} f.` : ''}` +
+        `${typeText ? ` ${typeText}${area}) -` : ''}` +
+        `${publisher ? ` ${publisher},` : ''}` +
+        `${city ? ` ${city},` : ''}` +
+        ` ${year}.` +
+        `${url ? ` Disponível em: ${url}.` : ''}` +
+        `${accessDate ? ` Acessado em: ${accessDate}.` : ''}`;
+
+    return citation; // Retorna a citação
+}
+    
 function generateOfficialDocumentCitation() {
     const agency = document.getElementById("officialAgency").value.trim().toUpperCase();
     const docType = document.getElementById("officialDocumentType").value.trim();
