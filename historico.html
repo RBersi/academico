@@ -134,13 +134,13 @@
     <h1>Histórico de Citações</h1>
     <ul id="listaHistorico"></ul>
     <div style="text-align: center;">
-    <button id="limparHistorico">Limpar Histórico</button>
-    </div>div    
+        <button id="limparHistorico">Limpar Histórico</button>
+    </div>  
 <footer>
     Desenvolvido por <a href="https://github.com/RBersi" target="_blank">Bersi</a> - 2025
 </footer>
  <script>
- function carregarHistorico() {
+function carregarHistorico() {
             const lista = document.getElementById('listaHistorico');
             lista.innerHTML = '';
             const historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
