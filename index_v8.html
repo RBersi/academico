@@ -266,33 +266,62 @@
 </footer>
     
 <script>
-/*
-    // Função remove espaços extras apenas no envio do formulário
+
+// Função para remover espaços extras ao enviar o formulário
 document.getElementById('citationForm').addEventListener('submit', function (event) {
-    // Previne o comportamento padrão de envio do formulário (opcional, dependendo do caso)
-    event.preventDefault();
-    // Seleciona todos os campos de entrada e textarea dentro do formulário
-    const inputs = document.querySelectorAll('#citationForm input, #citationForm textarea');
-    // Itera sobre cada campo e remove os espaços extras no início e no final
+    event.preventDefault(); // Previne o comportamento padrão de envio
+
+    // Seleciona todos os campos de entrada, incluindo os dinâmicos
+    const inputs = document.querySelectorAll('#citationForm input, #citationForm select, #citationForm textarea');
+
+    // Itera sobre cada campo e remove os espaços extras
     inputs.forEach(function (input) {
-        input.value = input.value.trim();
+        if (input.value && typeof input.value === 'string') {
+            input.value = input.value.trim();
+        }
     });
+
+    // Exibe os valores processados no console para depuração
+    console.log("Valores processados:");
+    inputs.forEach(function (input) {
+        console.log(`${input.id || input.name}: "${input.value}"`);
+    });
+
+    // Aqui você pode continuar com o processamento da citação
+    alert("Formulário processado com sucesso!");
 });
-*/
-    
-// Função nomeada para carregar campos dinamicamente
+
+// Função para carregar campos dinâmicos
 function loadDynamicFields() {
-    let selectedType = document.getElementById("documentType").value;
-    let fieldsContainer = document.getElementById("fieldsContainer");
-    fieldsContainer.innerHTML = "";  // Limpa campos anteriores
-    let fieldTemplate = document.getElementById(selectedType + "Fields");
+    const selectedType = document.getElementById("documentType").value;
+    const fieldsContainer = document.getElementById("fieldsContainer");
+
+    // Limpa os campos anteriores
+    fieldsContainer.innerHTML = "";
+
+    // Carrega o template correspondente ao tipo de documento selecionado
+    const fieldTemplate = document.getElementById(selectedType + "Fields");
     if (fieldTemplate) {
         fieldsContainer.innerHTML = fieldTemplate.innerHTML;
+
+        // Adiciona listeners aos novos campos dinâmicos
+        const dynamicInputs = fieldsContainer.querySelectorAll('input, select, textarea');
+        dynamicInputs.forEach(function (input) {
+            input.addEventListener('input', function () {
+                // Não faz nada aqui, apenas permite digitação normal
+            });
+        });
     }
 }
 
-// Event listener usando a função nomeada
+// Event listener para o campo de seleção de tipo de documento
 document.getElementById("documentType").addEventListener("change", loadDynamicFields);
+
+// Inicializa os campos dinâmicos ao carregar a página
+document.addEventListener("DOMContentLoaded", function () {
+    loadDynamicFields(); // Carrega os campos iniciais com base no valor padrão do select
+});
+
 
 // Função para formatar nomes de autores conforme ABNT
 function formatAuthors(authorsString) {
@@ -361,16 +390,16 @@ function generateCitation() {
 
 // Função para gerar citação de artigo
 function generateArticleCitation() {
-    const authors = formatAuthors(document.getElementById("articleAuthors").value);
-    const title = document.getElementById("articleTitle").value;
-    const journal = document.getElementById("articleJournal").value;
-    const volume = document.getElementById("articleVolume").value;
-    const number = document.getElementById("articleNumber").value;
-    const year = document.getElementById("articleYear").value;
-    const pages = document.getElementById("articlePages").value;
-    const doi = document.getElementById("articleDOI").value;
-    const url = document.getElementById("articleURL").value;
-    const data = document.getElementById("articleAccessDate").value;
+    const authors = formatAuthors(document.getElementById("articleAuthors").value.trim());
+    const title = document.getElementById("articleTitle").value.trim();
+    const journal = document.getElementById("articleJournal").value.trim();
+    const volume = document.getElementById("articleVolume").value.trim();
+    const number = document.getElementById("articleNumber").value.trim();
+    const year = document.getElementById("articleYear").value.trim();
+    const pages = document.getElementById("articlePages").value.trim();
+    const doi = document.getElementById("articleDOI").value.trim();
+    const url = document.getElementById("articleURL").value.trim();
+    const data = document.getElementById("articleAccessDate").value.trim();
 
 const citation = `${authors}. ${title}. <span class="bold-title">${journal}</span>` +
   `${volume ? `, v. ${volume}` : ''}` +
@@ -384,17 +413,17 @@ const citation = `${authors}. ${title}. <span class="bold-title">${journal}</spa
 }
 
 function generateBookCitation() {
-    const authors = formatAuthors(document.getElementById("bookAuthors").value);
-    const title = document.getElementById("bookTitle").value;
-    const edition = document.getElementById("bookEdition").value;
-    const volume = document.getElementById("bookVolume").value;
-    const city = document.getElementById("bookCity").value;
-    const publisher = document.getElementById("bookPublisher").value;
-    const year = document.getElementById("bookYear").value;
-    const pages = document.getElementById("bookPages").value;
-    const doi = document.getElementById("bookDOI").value;
-    const url = document.getElementById("bookURL").value;
-    const data = document.getElementById("bookAccessDate").value;
+    const authors = formatAuthors(document.getElementById("bookAuthors").value.trim());
+    const title = document.getElementById("bookTitle").value.trim();
+    const edition = document.getElementById("bookEdition").value.trim();
+    const volume = document.getElementById("bookVolume").value.trim();
+    const city = document.getElementById("bookCity").value.trim();
+    const publisher = document.getElementById("bookPublisher").value.trim();
+    const year = document.getElementById("bookYear").value.trim();
+    const pages = document.getElementById("bookPages").value.trim();
+    const doi = document.getElementById("bookDOI").value.trim();
+    const url = document.getElementById("bookURL").value.trim();
+    const data = document.getElementById("bookAccessDate").value.trim();
 
     const citation = `${authors}. <span class="bold-title">${title}</span>.` +
   `${edition ? ` ${edition} ed.` : ''}` +
@@ -412,19 +441,19 @@ function generateBookCitation() {
 }
 
 function generateChapterCitation() {
-    const chapterAuthors = formatAuthors(document.getElementById("chapterAuthors").value);
-    const chapterTitle = document.getElementById("chapterTitle").value;
-    const bookEditors = formatAuthors(document.getElementById("bookEditors").value);
-    const bookTitle = document.getElementById("bookTitle").value;
-    const edition = document.getElementById("bookEdition").value;
-    const volume = document.getElementById("bookVolume").value;
-    const city = document.getElementById("bookCity").value;
-    const publisher = document.getElementById("bookPublisher").value;
-    const year = document.getElementById("bookYear").value;
-    const pages = document.getElementById("bookPages").value;
-    const doi = document.getElementById("bookDOI").value;
-    const url = document.getElementById("bookURL").value;
-    const data = document.getElementById("bookAccessDate").value;
+    const chapterAuthors = formatAuthors(document.getElementById("chapterAuthors").value.trim());
+    const chapterTitle = document.getElementById("chapterTitle").value.trim();
+    const bookEditors = formatAuthors(document.getElementById("bookEditors").value.trim());
+    const bookTitle = document.getElementById("bookTitle").value.trim();
+    const edition = document.getElementById("bookEdition").value.trim();
+    const volume = document.getElementById("bookVolume").value.trim();
+    const city = document.getElementById("bookCity").value.trim();
+    const publisher = document.getElementById("bookPublisher").value.trim();
+    const year = document.getElementById("bookYear").value.trim();
+    const pages = document.getElementById("bookPages").value.trim();
+    const doi = document.getElementById("bookDOI").value.trim();
+    const url = document.getElementById("bookURL").value.trim();
+    const data = document.getElementById("bookAccessDate").value.trim();
 
     const citation = `${chapterAuthors}. ${chapterTitle}. In: ${bookEditors} (Org.). <span class="bold-title">${bookTitle}</span>` +
         `${edition ? `. ${edition} ed.` : ''}` + // Ponto final adicionado após "ed"
@@ -441,15 +470,15 @@ function generateChapterCitation() {
 }
 
 function generateOfficialDocumentCitation() {
-    const agency = document.getElementById("officialAgency").value.toUpperCase();
-    const docType = document.getElementById("officialDocumentType").value;
-    const docNumber = document.getElementById("officialDocumentNumber").value;
-    const docTitle = document.getElementById("officialDocumentTitle").value;
-    const docSubtitle = document.getElementById("officialDocumentSubtitle").value;
-    const docCity = document.getElementById("officialDocumentCity").value;
-    const docVolume = document.getElementById("officialDocumentVolume").value;
-    const docPages = document.getElementById("officialDocumentPages").value;
-    const publicationDate = document.getElementById("officialPublicationDate").value;
+    const agency = document.getElementById("officialAgency").value.trim().toUpperCase();
+    const docType = document.getElementById("officialDocumentType").value.trim();
+    const docNumber = document.getElementById("officialDocumentNumber").value.trim();
+    const docTitle = document.getElementById("officialDocumentTitle").value.trim();
+    const docSubtitle = document.getElementById("officialDocumentSubtitle").value.trim();
+    const docCity = document.getElementById("officialDocumentCity").value.trim();
+    const docVolume = document.getElementById("officialDocumentVolume").value.trim();
+    const docPages = document.getElementById("officialDocumentPages").value.trim();
+    const publicationDate = document.getElementById("officialPublicationDate").value.trim();
     const url = document.getElementById("officialURL").value;
     const data = document.getElementById("officialAccessDate").value;
 
@@ -468,11 +497,11 @@ function generateOfficialDocumentCitation() {
         
 
         function generateSiteCitation() {
-            const authors = formatAuthors(document.getElementById("siteAuthors").value);
-            const title = document.getElementById("siteTitle").value;
-            const site = document.getElementById("siteSite").value;
-            const url = document.getElementById("siteURL").value;
-            const data = document.getElementById("siteAccessDate").value;
+            const authors = formatAuthors(document.getElementById("siteAuthors").value.trim());
+            const title = document.getElementById("siteTitle").value.trim();
+            const site = document.getElementById("siteSite").value.trim();
+            const url = document.getElementById("siteURL").value.trim();
+            const data = document.getElementById("siteAccessDate").value.trim();
 
             const citation = `${authors}. ${title}. <span class="bold-title">${site}</span>.` +
         `${url ? ` Disponível em: ${url}.` : ''}` +
