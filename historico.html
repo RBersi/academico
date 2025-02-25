@@ -183,9 +183,9 @@
                 lista.appendChild(li);
             });
         } catch (error) {
-            console.error("Erro ao carregar o histórico:", error.message);
+            console.error(error.message);
             const li = document.createElement('li');
-            li.textContent = `Erro ao carregar o histórico: ${error.message}`;
+            li.textContent = `${error.message}`;
             lista.appendChild(li);
         }
     }
