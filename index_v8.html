@@ -496,7 +496,7 @@ function generateAcademicCitation() {
 
     // Montagem da citação seguindo a ordem ABNT
     const citation = `${authors}. <span class="bold-title">${title}</span>` +
-        `${subtitle ? `: ${subtitle}.` : '.'}.` +
+        `${subtitle ? `: ${subtitle}.` : '.'}` +
         `${depositDate ? ` ${depositDate}.` : ''}` +
         `${pages ? ` ${pages} f.` : ''}` +
         `${typeText ? ` ${typeText}${area}) -` : ''}` +
