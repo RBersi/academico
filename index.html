@@ -129,7 +129,7 @@
         </select>
         <div id="fieldsContainer"></div>
         <div style="text-align: center;">
-        <button type="button" onclick="salvarCitacaoNoHistorico(generateCitation())">Gerar Citação</button> 
+        <button type="button" onclick="gerarECapturarCitacao()">Gerar Citação</button>
         <button type="button" onclick="limpar()">Limpar</button>
         <button type="button" onclick="resetForm()">Reiniciar</button>
         </div>
@@ -591,24 +591,22 @@ function generateOfficialDocumentCitation() {
             
         return citation; //retorna citação
         }
-     
-     
-function salvarCitacaoNoHistorico(citacao) {
-    // Verifica se a citação é válida
-    if (!citacao || typeof citacao !== 'string') {
-        console.error("Citação inválida:", citacao);
-        return;
+
+    
+function gerarECapturarCitacao() {
+        let citacao = generateCitation();  // Gera a citação
+        if (citacao && citacao.trim() !== "") {  // Verifica se não está vazia
+            salvarCitacaoNoHistorico(citacao);
+        } else {
+            console.error("Citação inválida ou vazia.");
+        }
     }
 
-    // Obtém o histórico atual do localStorage
-    let historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
-
-    // Adiciona a nova citação ao histórico
-    historico.push(citacao);
-
-    // Salva o histórico atualizado no localStorage
-    localStorage.setItem('historicoCitations', JSON.stringify(historico));
-}
+function salvarCitacaoNoHistorico(citacao) {
+        let historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
+        historico.push(citacao);
+        localStorage.setItem('historicoCitations', JSON.stringify(historico));
+    }
        
     
        // Função para limpar o formulário
