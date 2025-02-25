@@ -428,9 +428,11 @@ function generateCitation() {
     // Mostrar resultado ou erro
     document.getElementById("citationOutput").innerHTML = citation; // Alterado para innerHTML
     document.getElementById("errorOutput").innerText = error;
+
+    return citation;
+
 }
 
-return citation;
 
 // Função para gerar citação de artigo
 function generateArticleCitation() {
@@ -596,13 +598,15 @@ function generateOfficialDocumentCitation() {
 
     
 function gerarECapturarCitacao() {
-        let citacao = generateCitation();  // Gera a citação
-        if (citacao && citacao.trim() !== "") {  // Verifica se não está vazia
-            salvarCitacaoNoHistorico(citacao);
-        } else {
-            console.error("Citação inválida ou vazia.");
-        }
+    let citacao = generateCitation();  // Chama a função para gerar a citação
+
+    if (citacao && citacao.trim() !== "") {  // Garante que a citação é válida
+        salvarCitacaoNoHistorico(citacao);
+    } else {
+        console.error("Citação inválida ou vazia.");
     }
+}
+
 
     
 function salvarCitacaoNoHistorico(citacao) {
