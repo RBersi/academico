@@ -129,7 +129,7 @@
         </select>
         <div id="fieldsContainer"></div>
         <div style="text-align: center;">
-        <button type="button" onclick="gerarECapturarCitacao()">Gerar Citação</button>
+        <button type="button" onclick="salvarCitacaoNoHistorico(generateCitation())">Gerar Citação</button> 
         <button type="button" onclick="limpar()">Limpar</button>
         <button type="button" onclick="resetForm()">Reiniciar</button>
         </div>
@@ -430,6 +430,8 @@ function generateCitation() {
     document.getElementById("errorOutput").innerText = error;
 }
 
+return citation.trim() ? citation : null; // Retorna a citação se não for vazia, ou null
+
 // Função para gerar citação de artigo
 function generateArticleCitation() {
     const authors = formatAuthors(document.getElementById("articleAuthors").value.trim());
@@ -602,11 +604,18 @@ function gerarECapturarCitacao() {
         }
     }
 
+    
 function salvarCitacaoNoHistorico(citacao) {
-        let historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
-        historico.push(citacao);
-        localStorage.setItem('historicoCitations', JSON.stringify(historico));
+    if (!citacao || citacao.trim() === "") {
+        console.error("Citação inválida ou vazia, não será salva.");
+        return;
     }
+
+    let historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
+    historico.push(citacao);
+    localStorage.setItem('historicoCitations', JSON.stringify(historico));
+}
+
        
     
        // Função para limpar o formulário
