@@ -70,18 +70,50 @@
         .bold-title {
            font-weight: bold;
         }
+        .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        }
+        .header-left {
+        display: flex;
+        align-items: center;
+        }
+        .header-logo {
+        width: 30px;
+        height: 30px;
+        margin-right: 10px;
+        }
+        .header-title {
+        font-size: 18px;
+        font-weight: bold;
+        }
         .header .historico-link {
-            text-decoration: none;
-            color: #007bff;
-            font-weight: bold;
-            cursor: pointer;
+        text-decoration: none;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
         }
         .header .historico-link:hover {
-            text-decoration: underline;
+        text-decoration: underline;
         }
     </style>
 </head>
 <body>
+<header class="header">
+    <div class="header-left">
+        <img src="favicon.png" alt="Logo" class="header-logo">
+        <span class="header-title">Gerador de Citações ABNT</span>
+    </div>
+    <div class="header-right">
+        <a href="historico.html" class="historico-link">Histórico</a>
+    </div>
+</header>
     <h1>Gerador de Citações ABNT</h1>
     <form id="citationForm">
         <label for="documentType">Tipo de documento:</label>
