@@ -125,7 +125,7 @@
     <!-- Cabeçalho -->
     <header class="header">
         <div class="header-left">
-            <img src="favicon.png" alt="Logo" class="header-logo">
+            <img src="favcon.png" alt="Logo" class="header-logo">
             <span class="header-title">Gerador de Citações ABNT</span>
         </div>
         <div class="header-right">
@@ -138,23 +138,48 @@
     <ul id="listaHistorico"></ul>
 
     <!-- Rodapé -->
-    <footer>
-        Desenvolvido por Bersi com IA
-    </footer>
+<footer>
+    Desenvolvido por <a href="https://github.com/RBersi" target="_blank">Bersi</a> - 2025
+</footer>
 
     <script>
         // Função para carregar o histórico
-        function carregarHistorico() {
-            const historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
-            const lista = document.getElementById('listaHistorico');
-            lista.innerHTML = ''; // Limpa a lista antes de atualizar
-            historico.forEach(citacao => {
-                console.log("Citação carregada:", citacao); // Verifica o conteúdo de cada citação
-                const li = document.createElement('li');
-                li.textContent = citacao; // Define o texto do item da lista
-                lista.appendChild(li);
-            });
+function carregarHistorico() {
+    const lista = document.getElementById('listaHistorico');
+    lista.innerHTML = ''; // Limpa a lista antes de atualizar
+
+    // Tenta carregar o histórico do localStorage
+    let historico = localStorage.getItem('historicoCitations');
+
+    // Verifica se o histórico existe e não é nulo
+    if (historico) {
+        try {
+            historico = JSON.parse(historico); // Converte o JSON para array
+            if (Array.isArray(historico)) {
+                historico.forEach(citacao => {
+                    console.log("Citação carregada:", citacao); // Debug: verifica cada citação
+                    if (citacao) { // Garante que a citação não é nula
+                        const li = document.createElement('li');
+                        li.textContent = citacao; // Define o texto do item da lista
+                        lista.appendChild(li);
+                    }
+                });
+            } else {
+                console.error("O histórico não é um array válido.");
+            }
+        } catch (error) {
+            console.error("Erro ao processar o histórico:", error);
         }
+    } else {
+        console.warn("Nenhum histórico encontrado no localStorage.");
+        const li = document.createElement('li');
+        li.textContent = "Nenhuma citação disponível no histórico.";
+        lista.appendChild(li);
+    }
+}
+
+// Carregar histórico ao abrir a página
+window.onload = carregarHistorico;
 
         // Carregar histórico ao abrir a página
         window.onload = carregarHistorico;
