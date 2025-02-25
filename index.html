@@ -595,7 +595,7 @@ function generateOfficialDocumentCitation() {
      
 function salvarCitacaoNoHistorico(citacao) {
     let historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
-    historico.push(citacao);
+    historico.push(citacao); // Adiciona a nova citação
     localStorage.setItem('historicoCitations', JSON.stringify(historico));
 }
        
