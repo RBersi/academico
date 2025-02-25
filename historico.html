@@ -140,30 +140,53 @@
     Desenvolvido por <a href="https://github.com/RBersi" target="_blank">Bersi</a> - 2025
 </footer>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     function carregarHistorico() {
         const lista = document.getElementById('listaHistorico');
-        lista.innerHTML = '';
+        lista.innerHTML = ''; // Limpa a lista antes de recarregar
         const historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
-        
+
         if (historico.length === 0) {
-            lista.innerHTML = '<li>Histórico vazio.</li>';
+            const li = document.createElement('li');
+            li.textContent = 'Histórico vazio.';
+            lista.appendChild(li);
             return;
         }
-        
-        historico.forEach((citacao) => {
+
+        historico.forEach((citacao, index) => {
             const li = document.createElement('li');
-            li.textContent = citacao;
+
+            // Cria o texto da citação
+            const span = document.createElement('span');
+            span.textContent = citacao;
+
+            // Cria o botão de exclusão
+            const button = document.createElement('button');
+            button.textContent = 'Excluir';
+            button.addEventListener('click', () => removerCitacao(index));
+
+            // Adiciona os elementos ao <li>
+            li.appendChild(span);
+            li.appendChild(button);
+
+            // Adiciona o <li> à lista
             lista.appendChild(li);
         });
     }
-    
+
+    function removerCitacao(index) {
+        let historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
+        historico.splice(index, 1); // Remove a citação pelo índice
+        localStorage.setItem('historicoCitations', JSON.stringify(historico)); // Atualiza o localStorage
+        carregarHistorico(); // Recarrega o histórico na tela
+    }
+
     document.getElementById('limparHistorico').addEventListener('click', () => {
-        localStorage.removeItem('historicoCitations');
-        carregarHistorico();
+        localStorage.removeItem('historicoCitations'); // Remove o histórico completo
+        carregarHistorico(); // Recarrega o histórico na tela
     });
 
-    carregarHistorico();
+    carregarHistorico(); // Carrega o histórico inicial
 });
 </script>
 </body>
