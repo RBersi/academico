@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico de Citações</title>
+</head>
+<body>
+    <h2>Histórico de Citações</h2>
+    <ul id="listaHistorico"></ul>
+
+    <script>
+ function carregarHistorico() {
+    const historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
+    const lista = document.getElementById('listaHistorico');
+    lista.innerHTML = ''; // Limpa a lista antes de atualizar
+
+    historico.forEach(citacao => {
+        console.log("Citação carregada:", citacao); // Verifica o conteúdo de cada citação
+        const li = document.createElement('li');
+        li.textContent = citacao; // Define o texto do item da lista
+        lista.appendChild(li);
+    });
+}
+
+        // Carregar histórico ao abrir a página
+        window.onload = carregarHistorico;
+    </script>
+</body>
+</html>
