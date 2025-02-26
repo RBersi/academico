@@ -89,11 +89,6 @@
         display: flex;
         align-items: center;
     }
-    .header-right {
-        display: flex;
-        align-items: center;
-        gap: 10px; /* Espaço entre o seletor e o link */
-    }
     .header-logo {
         width: 25px;
         height: 25px;
@@ -162,29 +157,27 @@
     .action-button:hover {
         opacity: 0.8;
     }
-    .ordenacao-container {
-    display: flex;
-    align-items: center;
-    gap: 5px; /* Espaçamento entre o rótulo e o select */
-    }
 </style>
 
 </head>
 <body>
-<header class="header">
-    <div class="header-left">
-        <img src="favcon.png" alt="Logo" class="header-logo">
-        <span class="header-title">Gerador de Referências ABNT</span>
-    </div>
-    <div class="header-right">
-        <label for="ordenacao">Ordenar:</label>
-        <select id="ordenacao">
-            <option value="data">Lançamento</option>
-            <option value="alfabetica">Alfabética</option>
-        </select>
-        <a href="index.html" class="historico-link">Voltar ao Gerador</a>
-    </div>
-</header>
+    <header class="header">
+        <div class="header-left">
+            <img src="favcon.png" alt="Logo" class="header-logo">
+            <span class="header-title">Gerador de Referências ABNT</span>
+        </div>
+        <div class="header-right">
+            <a href="index.html" class="historico-link">Voltar ao Gerador</a>
+        </div>
+    </header>
+    <div class="sort-container">
+    <label for="ordenacao">Ordenar por:</label>
+    <select id="ordenacao">
+        <option value="data">Data de chegada</option>
+        <option value="alfabetica">Ordem alfabética</option>
+    </select>
+</div>
+
     <h1>Histórico de Referências</h1>
     <ul id="listaHistorico"></ul>
     <div class="container">
@@ -196,36 +189,34 @@
     </footer>
 
     <script>
-
-    // escolhas dinâmicas na página
-        document.addEventListener("DOMContentLoaded", function () {
+        
+    //Eventos Dinâmicos (controle da página, ordenação, escolha usuário)
+    document.addEventListener("DOMContentLoaded", function () {
         function decodeHTML(html) {
             const txt = document.createElement("textarea");
             txt.innerHTML = html;
             return txt.value;
         }
 
-
-            const ordenacaoSelect = document.getElementById('ordenacao');
-if (ordenacaoSelect) {
-    ordenacaoSelect.addEventListener('change', () => {
-        localStorage.setItem('ordenacaoCitations', ordenacaoSelect.value);
+    const ordenacaoSelect = document.getElementById('ordenacao');
+    if (ordenacaoSelect) {
+        ordenacaoSelect.addEventListener('change', () => {
+            localStorage.setItem('ordenacaoCitations', ordenacaoSelect.value);
+            carregarHistorico();
+        });
+    }
+        
+    document.getElementById('ordenacao').addEventListener('change', () => {
+        localStorage.setItem('ordenacaoCitations', document.getElementById('ordenacao').value);
         carregarHistorico();
     });
-}
 
-            
-        document.getElementById('ordenacao').addEventListener('change', () => {
-    localStorage.setItem('ordenacaoCitations', document.getElementById('ordenacao').value);
-    carregarHistorico();
-});
-            
-        document.addEventListener("DOMContentLoaded", function () {
-    const ordenacaoSalva = localStorage.getItem('ordenacaoCitations') || 'data';
-    document.getElementById('ordenacao').value = ordenacaoSalva;
-
-    carregarHistorico(); // Carrega o histórico inicial
-});
+    document.addEventListener("DOMContentLoaded", function () {
+        const ordenacaoSalva = localStorage.getItem('ordenacaoCitations') || 'data';
+        document.getElementById('ordenacao').value = ordenacaoSalva;
+    
+        carregarHistorico(); // Carrega o histórico inicial
+    });
 
 
 function carregarHistorico() {
@@ -283,6 +274,53 @@ function carregarHistorico() {
         lista.appendChild(li);
     });
 }
+
+
+
+    
+    // Ordena as referências alfabeticamente (ignorando maiúsculas/minúsculas)
+    historico.sort((a, b) => {
+        const citacaoA = a.toLowerCase();
+        const citacaoB = b.toLowerCase();
+        return citacaoA.localeCompare(citacaoB);
+    });
+
+    historico.forEach((citacao, index) => {
+        const li = document.createElement('li');
+
+        // Criação do contêiner da citação
+        const citationContainer = document.createElement('span');
+        citationContainer.innerHTML = decodeHTML(citacao);
+
+        // Criação do contêiner dos botões
+        const buttonContainer = document.createElement('div');
+        buttonContainer.className = 'button-container';
+
+        // Criação do botão de copiar
+        const copyButton = document.createElement('button');
+        copyButton.textContent = 'Copiar';
+        copyButton.className = 'action-button copy';
+        copyButton.addEventListener('click', () => copiarCitacao(citationContainer));
+
+        // Criação do botão de exclusão
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Excluir';
+        deleteButton.className = 'action-button delete';
+        deleteButton.addEventListener('click', () => removerCitacao(index));
+
+        // Adiciona os botões ao container de botões
+        buttonContainer.appendChild(copyButton);
+        buttonContainer.appendChild(deleteButton);
+
+        // Adiciona os elementos ao <li>
+        li.appendChild(citationContainer);
+        li.appendChild(buttonContainer);
+
+        // Adiciona o <li> à lista
+        lista.appendChild(li);
+    });
+}
+
 
 
         
