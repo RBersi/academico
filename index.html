@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta property="og:title" content="Gerador de Citações ABNT">
+    <meta property="og:title" content="Gerador de Referências ABNT">
     <meta property="og:image" content="https://i.imgur.com/UuSdpJM.jpeg">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de Citações ABNT</title>
+    <title>Gerador de Referências ABNT</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -133,7 +133,7 @@
         </select>
         <div id="fieldsContainer"></div>
         <div style="text-align: center;">
-        <button type="button" onclick="salvarCitacaoNoHistorico(generateCitation())">Gerar Citação</button> 
+        <button type="button" onclick="salvarCitacaoNoHistorico(generateCitation())">Gerar Referência</button> 
         <button type="button" onclick="limpar()">Limpar</button>
         <button type="button" onclick="resetForm()">Reiniciar</button>
         </div>
@@ -608,7 +608,7 @@ function gerarECapturarCitacao() {
     if (citacao && citacao.trim() !== "") {  // Garante que a citação é válida
         salvarCitacaoNoHistorico(citacao);
     } else {
-        console.error("Citação inválida ou vazia.");
+        console.error("Referência inválida ou vazia.");
     }
 }
 
@@ -616,7 +616,7 @@ function gerarECapturarCitacao() {
     
 function salvarCitacaoNoHistorico(citacao) {
     if (!citacao || citacao.trim() === "") {
-        console.error("Citação inválida ou vazia, não será salva.");
+        console.error("Referência inválida ou vazia, não será salva.");
         return;
     }
 
