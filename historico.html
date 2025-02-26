@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Histórico de Citações</title>
+    <title>Histórico de Referências</title>
 <style>
     body {
         font-family: Arial, sans-serif;
@@ -159,13 +159,13 @@
     <header class="header">
         <div class="header-left">
             <img src="favcon.png" alt="Logo" class="header-logo">
-            <span class="header-title">Gerador de Citações ABNT</span>
+            <span class="header-title">Gerador de Referências ABNT</span>
         </div>
         <div class="header-right">
             <a href="index.html" class="historico-link">Voltar ao Gerador</a>
         </div>
     </header>
-    <h1>Histórico de Citações</h1>
+    <h1>Histórico de Referências</h1>
     <ul id="listaHistorico"></ul>
     <div class="container">
         <button id="limparHistorico">Limpar Histórico</button>
@@ -234,7 +234,7 @@
 
         function copiarCitacao(citacao) {
             navigator.clipboard.writeText(decodeHTML(citacao)).then(() => {
-                alert("Citação copiada!");
+                alert("Referência copiada!");
             }).catch(err => {
                 console.error("Erro ao copiar: ", err);
             });
