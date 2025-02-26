@@ -271,10 +271,13 @@ function copiarCitacao(citacaoElemento) {
             carregarHistorico(); // Recarrega o histórico na tela
         }
 
-        document.getElementById('limparHistorico').addEventListener('click', () => {
-            localStorage.removeItem('historicoCitations'); // Remove o histórico completo
-            carregarHistorico(); // Recarrega o histórico na tela
-        });
+    document.getElementById('limparHistorico').addEventListener('click', () => {
+    if (confirm("Tem certeza que deseja limpar todo o histórico? Esta ação não pode ser desfeita.")) {
+        localStorage.removeItem('historicoCitations');
+        carregarHistorico();
+    }
+});
+
 
         carregarHistorico(); // Carrega o histórico inicial
     });
