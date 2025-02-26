@@ -215,7 +215,7 @@
         const copyButton = document.createElement('button');
         copyButton.textContent = 'Copiar';
         copyButton.className = 'action-button copy';
-        copyButton.addEventListener('click', () => copiarCitacao(citacao));
+        copyButton.addEventListener('click', () => copiarCitacao(span));
 
         // Criação do botão de exclusão
         const deleteButton = document.createElement('button');
@@ -236,7 +236,8 @@
     });
 }
 
-
+        
+/*
         function copiarCitacao(citacao) {
             navigator.clipboard.writeText(decodeHTML(citacao)).then(() => {
                 alert("Referência copiada!");
@@ -244,7 +245,18 @@
                 console.error("Erro ao copiar: ", err);
             });
         }
+*/
+function copiarCitacao(citacaoElemento) {
+    const textoFormatado = citacaoElemento.innerText; // Obtém o texto sem HTML
+    navigator.clipboard.writeText(textoFormatado).then(() => {
+        alert("Citação copiada!");
+    }).catch(err => {
+        console.error("Erro ao copiar: ", err);
+    });
+}
 
+
+        
         function removerCitacao(index) {
             let historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
             historico.splice(index, 1); // Remove a citação pelo índice
