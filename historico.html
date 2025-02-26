@@ -191,7 +191,7 @@
 function carregarHistorico() {
     const lista = document.getElementById('listaHistorico');
     lista.innerHTML = ''; // Limpa a lista antes de recarregar
-    const historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
+    let historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
 
     if (historico.length === 0) {
         const li = document.createElement('li');
@@ -199,6 +199,13 @@ function carregarHistorico() {
         lista.appendChild(li);
         return;
     }
+
+    // Ordena as referências alfabeticamente (ignorando maiúsculas/minúsculas)
+    historico.sort((a, b) => {
+        const citacaoA = a.toLowerCase();
+        const citacaoB = b.toLowerCase();
+        return citacaoA.localeCompare(citacaoB);
+    });
 
     historico.forEach((citacao, index) => {
         const li = document.createElement('li');
@@ -237,6 +244,7 @@ function carregarHistorico() {
 }
 
 
+
         
 /*
         function copiarCitacao(citacao) {
@@ -262,7 +270,6 @@ function copiarCitacao(citacaoElemento) {
         console.error("Erro ao copiar: ", err);
     });
 }
-
         
         function removerCitacao(index) {
             let historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
