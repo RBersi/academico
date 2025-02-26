@@ -90,9 +90,9 @@
         align-items: center;
     }
     .header-right {
-    display: flex;
-    align-items: center;
-    gap: 15px; /* Adiciona espaçamento entre os itens */
+        display: flex;
+        align-items: center;
+        gap: 10px; /* Espaço entre o seletor e o link */
     }
     .header-logo {
         width: 25px;
@@ -171,22 +171,20 @@
 
 </head>
 <body>
-    <header class="header">
-        <div class="header-left">
-            <img src="favcon.png" alt="Logo" class="header-logo">
-            <span class="header-title">Gerador de Referências ABNT</span>
-        </div>
-        <div class="header-right">
-            <div class="ordenacao-container">
-            <label for="ordenacao">Ordenar:</label>
-            <select id="ordenacao">
-                <option value="data">Lançamento</option>
-                <option value="alfabetica">Alfabética</option>
-            </select>
-            </div>
-            <a href="index.html" class="historico-link">Voltar ao Gerador</a>
-        </div>
-    </header>
+<header class="header">
+    <div class="header-left">
+        <img src="favcon.png" alt="Logo" class="header-logo">
+        <span class="header-title">Gerador de Referências ABNT</span>
+    </div>
+    <div class="header-right">
+        <label for="ordenacao">Ordenar:</label>
+        <select id="ordenacao">
+            <option value="data">Lançamento</option>
+            <option value="alfabetica">Alfabética</option>
+        </select>
+        <a href="index.html" class="historico-link">Voltar ao Gerador</a>
+    </div>
+</header>
     <h1>Histórico de Referências</h1>
     <ul id="listaHistorico"></ul>
     <div class="container">
