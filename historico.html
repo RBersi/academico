@@ -107,15 +107,19 @@
             text-align: center;
         }
         .citation-container {
-        display: block;
-        margin-bottom: 5px;
-        font-size: 16px;
-        line-height: 1.5;
+            display: block;
+            margin-bottom: 5px;
+            font-size: 16px;
+            line-height: 1.5;
         }
         .button-container {
             display: flex;
             justify-content: flex-end; /* Alinha os botões à direita */
-            gap: 10px;
+            opacity: 0; /* Inicialmente invisível */
+            transition: opacity 0.3s ease-in-out;
+        }
+        li:hover .button-container {
+            opacity: 1; /* Exibe os botões ao passar o mouse */
         }
         .action-button {
             padding: 5px 8px;
