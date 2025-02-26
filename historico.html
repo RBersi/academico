@@ -106,6 +106,35 @@
         .container {
             text-align: center;
         }
+        .citation-container {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 16px;
+        line-height: 1.5;
+        }
+        .button-container {
+            display: flex;
+            gap: 10px;
+        }
+        .action-button {
+            padding: 5px 8px;
+            font-size: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .copy {
+            background-color: #28a745;
+            color: white;
+        }
+        .delete {
+            background-color: #dc3545;
+            color: white;
+        }
+        .action-button:hover {
+            opacity: 0.8;
+        }
     </style>
 </head>
 <body>
@@ -137,61 +166,56 @@
             return txt.value;
         }
 
-        function carregarHistorico() {
-            const lista = document.getElementById('listaHistorico');
-            lista.innerHTML = ''; // Limpa a lista antes de recarregar
-            const historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
+       function carregarHistorico() {
+    const lista = document.getElementById('listaHistorico');
+    lista.innerHTML = ''; // Limpa a lista antes de recarregar
+    const historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
 
-            if (historico.length === 0) {
-                const li = document.createElement('li');
-                li.textContent = 'Histórico vazio.';
-                lista.appendChild(li);
-                return;
-            }
+    if (historico.length === 0) {
+        const li = document.createElement('li');
+        li.textContent = 'Histórico vazio.';
+        lista.appendChild(li);
+        return;
+    }
 
-            historico.forEach((citacao, index) => {
-                const li = document.createElement('li');
-                li.style.position = "relative"; // Para posicionamento correto dos botões
+    historico.forEach((citacao, index) => {
+        const li = document.createElement('li');
+        li.style.position = "relative";
 
-                // Cria o texto da citação e interpreta o HTML salvo
-                const span = document.createElement('span');
-                span.innerHTML = decodeHTML(citacao);
+        // Criação do contêiner da citação
+        const citationContainer = document.createElement('div');
+        citationContainer.className = 'citation-container';
+        citationContainer.innerHTML = decodeHTML(citacao);
 
-                // Criação do botão de copiar
-                const copyButton = document.createElement('button');
-                copyButton.textContent = 'Copiar';
-                copyButton.className = 'action-button';
-                copyButton.style.display = 'none'; // Oculto por padrão
-                copyButton.addEventListener('click', () => copiarCitacao(citacao));
+        // Criação do contêiner dos botões
+        const buttonContainer = document.createElement('div');
+        buttonContainer.className = 'button-container';
 
-                // Criação do botão de exclusão
-                const deleteButton = document.createElement('button');
-                deleteButton.textContent = 'Excluir';
-                deleteButton.className = 'action-button';
-                deleteButton.style.display = 'none'; // Oculto por padrão
-                deleteButton.addEventListener('click', () => removerCitacao(index));
+        // Criação do botão de copiar
+        const copyButton = document.createElement('button');
+        copyButton.textContent = 'Copiar';
+        copyButton.className = 'action-button copy';
+        copyButton.addEventListener('click', () => copiarCitacao(citacao));
 
-                // Exibir botões ao passar o mouse
-                li.addEventListener('mouseenter', () => {
-                    copyButton.style.display = 'inline-block';
-                    deleteButton.style.display = 'inline-block';
-                });
+        // Criação do botão de exclusão
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Excluir';
+        deleteButton.className = 'action-button delete';
+        deleteButton.addEventListener('click', () => removerCitacao(index));
 
-                // Ocultar botões ao sair com o mouse
-                li.addEventListener('mouseleave', () => {
-                    copyButton.style.display = 'none';
-                    deleteButton.style.display = 'none';
-                });
+        // Adiciona os botões ao container de botões
+        buttonContainer.appendChild(copyButton);
+        buttonContainer.appendChild(deleteButton);
 
-                // Adiciona os elementos ao <li>
-                li.appendChild(span);
-                li.appendChild(copyButton);
-                li.appendChild(deleteButton);
+        // Adiciona os elementos ao <li>
+        li.appendChild(citationContainer);
+        li.appendChild(buttonContainer);
 
-                // Adiciona o <li> à lista
-                lista.appendChild(li);
-            });
-        }
+        // Adiciona o <li> à lista
+        lista.appendChild(li);
+    });
+}
+
 
         function copiarCitacao(citacao) {
             navigator.clipboard.writeText(decodeHTML(citacao)).then(() => {
