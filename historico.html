@@ -10,6 +10,7 @@
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <title>Histórico de Referências</title>
 <style>
+    /* Mantém os estilos originais */
     body {
         font-family: Arial, sans-serif;
         margin: 20px;
@@ -81,13 +82,19 @@
         align-items: center;
         background-color: white;
         color: black;
-        padding: 10px 20px;
+        padding: 3px 20px;
         border-bottom: 1px solid #ccc;
         margin-bottom: 20px;
     }
     .header-left {
         display: flex;
         align-items: center;
+    }
+    .header-right {
+    display: flex;
+    align-items: center; /* Alinha verticalmente os elementos */
+    gap: 10px; /* Espaço entre os elementos */
+    white-space: nowrap; /* Impede quebra de linha no contêiner */
     }
     .header-logo {
         width: 25px;
@@ -158,132 +165,132 @@
         opacity: 0.8;
     }
 </style>
-
 </head>
 <body>
-    <header class="header">
-        <div class="header-left">
-            <img src="favcon.png" alt="Logo" class="header-logo">
-            <span class="header-title">Gerador de Referências ABNT</span>
-        </div>
-        <div class="header-right">
-            <a href="index.html" class="historico-link">Voltar ao Gerador</a>
-        </div>
-    </header>
+<header class="header">
+    <div class="header-left">
+        <img src="favcon.png" alt="Logo" class="header-logo">
+        <span class="header-title">Gerador de Referências ABNT</span>
+    </div>
+    <div class="header-right">
+      <select id="ordenacaoHistorico" style="padding: 4px; border-radius: 3px; border: none; max-width: 150px; box-sizing: border-box; height: 24px;">
+          <option value="alfabetica">Ordem Alfabética</option>
+          <option value="data">Data de Lançamento</option>
+      </select>
+      <a href="index.html" class="historico-link" style="white-space: nowrap; font-size: 14px;">Voltar ao Gerador</a>
+    </div>
+</header>
     <h1>Histórico de Referências</h1>
     <ul id="listaHistorico"></ul>
     <div class="container">
         <button id="limparHistorico">Limpar Histórico</button>
     </div>
-
     <footer>
         Desenvolvido por <a href="https://github.com/RBersi" target="_blank">Bersi</a> - 2025
     </footer>
-
     <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        function decodeHTML(html) {
-            const txt = document.createElement("textarea");
-            txt.innerHTML = html;
-            return txt.value;
-        }
+        document.addEventListener("DOMContentLoaded", function () {
+            function decodeHTML(html) {
+                const txt = document.createElement("textarea");
+                txt.innerHTML = html;
+                return txt.value;
+            }
 
-function carregarHistorico() {
-    const lista = document.getElementById('listaHistorico');
-    lista.innerHTML = ''; // Limpa a lista antes de recarregar
-    let historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
+            function carregarHistorico(ordem = "alfabetica") {
+                const lista = document.getElementById('listaHistorico');
+                lista.innerHTML = ''; // Limpa a lista antes de recarregar
+                let historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
+                if (historico.length === 0) {
+                    const li = document.createElement('li');
+                    li.textContent = 'Histórico vazio.';
+                    lista.appendChild(li);
+                    return;
+                }
 
-    if (historico.length === 0) {
-        const li = document.createElement('li');
-        li.textContent = 'Histórico vazio.';
-        lista.appendChild(li);
-        return;
-    }
+                // Ordena as referências com base na seleção
+                if (ordem === "alfabetica") {
+                    historico.sort((a, b) => {
+                        const citacaoA = a.toLowerCase();
+                        const citacaoB = b.toLowerCase();
+                        return citacaoA.localeCompare(citacaoB);
+                    });
+                } else if (ordem === "data") {
+                    historico.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                }
 
-    // Ordena as referências alfabeticamente (ignorando maiúsculas/minúsculas)
-    historico.sort((a, b) => {
-        const citacaoA = a.toLowerCase();
-        const citacaoB = b.toLowerCase();
-        return citacaoA.localeCompare(citacaoB);
-    });
+                historico.forEach((citacao, index) => {
+                    const li = document.createElement('li');
+                    // Criação do contêiner da citação
+                    const citationContainer = document.createElement('span');
+                    citationContainer.innerHTML = decodeHTML(citacao.citacao || citacao);
 
-    historico.forEach((citacao, index) => {
-        const li = document.createElement('li');
+                    // Criação do contêiner dos botões
+                    const buttonContainer = document.createElement('div');
+                    buttonContainer.className = 'button-container';
 
-        // Criação do contêiner da citação
-        const citationContainer = document.createElement('span');
-        citationContainer.innerHTML = decodeHTML(citacao);
+                    // Criação do botão de copiar
+                    const copyButton = document.createElement('button');
+                    copyButton.textContent = 'Copiar';
+                    copyButton.className = 'action-button copy';
+                    copyButton.addEventListener('click', () => copiarCitacao(citationContainer));
 
-        // Criação do contêiner dos botões
-        const buttonContainer = document.createElement('div');
-        buttonContainer.className = 'button-container';
+                    // Criação do botão de exclusão
+                    const deleteButton = document.createElement('button');
+                    deleteButton.textContent = 'Excluir';
+                    deleteButton.className = 'action-button delete';
+                    deleteButton.addEventListener('click', () => removerCitacao(citacao));
 
-        // Criação do botão de copiar
-        const copyButton = document.createElement('button');
-        copyButton.textContent = 'Copiar';
-        copyButton.className = 'action-button copy';
-        copyButton.addEventListener('click', () => copiarCitacao(citationContainer));
+                    // Adiciona os botões ao container de botões
+                    buttonContainer.appendChild(copyButton);
+                    buttonContainer.appendChild(deleteButton);
 
-        // Criação do botão de exclusão
-        const deleteButton = document.createElement('button');
-        deleteButton.textContent = 'Excluir';
-        deleteButton.className = 'action-button delete';
-        deleteButton.addEventListener('click', () => removerCitacao(citacao));
+                    // Adiciona os elementos ao <li>
+                    li.appendChild(citationContainer);
+                    li.appendChild(buttonContainer);
 
-        // Adiciona os botões ao container de botões
-        buttonContainer.appendChild(copyButton);
-        buttonContainer.appendChild(deleteButton);
+                    // Adiciona o <li> à lista
+                    lista.appendChild(li);
+                });
+            }
 
-        // Adiciona os elementos ao <li>
-        li.appendChild(citationContainer);
-        li.appendChild(buttonContainer);
+            function copiarCitacao(citacaoElemento) {
+                const tempElement = document.createElement("div");
+                tempElement.innerHTML = citacaoElemento.innerHTML;
+                const textoFormatado = tempElement.textContent || tempElement.innerText;
+                navigator.clipboard.writeText(textoFormatado.trim()).then(() => {
+                    // Feedback visual no botão
+                    citacaoElemento.nextSibling.firstChild.textContent = "Copiado!";
+                    setTimeout(() => {
+                        citacaoElemento.nextSibling.firstChild.textContent = "Copiar";
+                    }, 1500);
+                }).catch(err => {
+                    console.error("Erro ao copiar: ", err);
+                });
+            }
 
-        // Adiciona o <li> à lista
-        lista.appendChild(li);
-    });
-}
+            function removerCitacao(citacaoParaRemover) {
+                let historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
+                // Filtra removendo a citação exata
+                historico = historico.filter(citacao => citacao !== citacaoParaRemover);
+                localStorage.setItem('historicoCitations', JSON.stringify(historico)); // Atualiza o localStorage
+                carregarHistorico(document.getElementById('ordenacaoHistorico').value); // Recarrega o histórico na tela
+            }
 
+            document.getElementById('limparHistorico').addEventListener('click', () => {
+                if (confirm("Tem certeza que deseja limpar todo o histórico? Esta ação não pode ser desfeita.")) {
+                    localStorage.removeItem('historicoCitations');
+                    carregarHistorico();
+                }
+            });
 
-function copiarCitacao(citacaoElemento) {
-    const tempElement = document.createElement("div");
-    tempElement.innerHTML = citacaoElemento.innerHTML;
-    const textoFormatado = tempElement.textContent || tempElement.innerText;
+            // Evento para mudar a ordenação
+            document.getElementById('ordenacaoHistorico').addEventListener('change', (event) => {
+                carregarHistorico(event.target.value);
+            });
 
-    navigator.clipboard.writeText(textoFormatado.trim()).then(() => {
-        // Feedback visual no botão
-        citacaoElemento.nextSibling.firstChild.textContent = "Copiado!";
-        setTimeout(() => {
-            citacaoElemento.nextSibling.firstChild.textContent = "Copiar";
-        }, 1500);
-    }).catch(err => {
-        console.error("Erro ao copiar: ", err);
-    });
-}
-        
-function removerCitacao(citacaoParaRemover) {
-    let historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
-
-    // Filtra removendo a citação exata
-    historico = historico.filter(citacao => citacao !== citacaoParaRemover);
-
-    localStorage.setItem('historicoCitations', JSON.stringify(historico)); // Atualiza o localStorage
-    carregarHistorico(); // Recarrega o histórico na tela
-}
-
-
-    document.getElementById('limparHistorico').addEventListener('click', () => {
-    if (confirm("Tem certeza que deseja limpar todo o histórico? Esta ação não pode ser desfeita.")) {
-        localStorage.removeItem('historicoCitations');
-        carregarHistorico();
-    }
-});
-
-
-        carregarHistorico(); // Carrega o histórico inicial
-    });
+            // Carrega o histórico inicialmente em ordem alfabética
+            carregarHistorico("alfabetica");
+        });
     </script>
-
-    
 </body>
-
 </html>
