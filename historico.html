@@ -152,7 +152,6 @@
             <a href="index.html" class="historico-link">Voltar ao Gerador</a>
         </div>
     </header>
-
     <h1>Histórico de Citações</h1>
     <ul id="listaHistorico"></ul>
     <div class="container">
@@ -216,10 +215,20 @@
         li.appendChild(citationContainer);
         li.appendChild(buttonContainer);
 
+        // Adiciona evento para mostrar os botões ao passar o mouse
+        li.addEventListener('mouseenter', () => {
+            buttonContainer.style.opacity = '1';
+        });
+
+        li.addEventListener('mouseleave', () => {
+            buttonContainer.style.opacity = '0';
+        });
+
         // Adiciona o <li> à lista
         lista.appendChild(li);
     });
 }
+
 
 
         function copiarCitacao(citacao) {
