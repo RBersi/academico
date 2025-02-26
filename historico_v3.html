@@ -195,7 +195,25 @@
                 txt.innerHTML = html;
                 return txt.value;
             }
-
+            
+            // Função para salvar a escolha em um cookie
+            function salvarEscolha(valor) {
+              document.cookie = `filtroOrdenacao=${valor}; path=/; max-age=31536000`; // Expira em 1 ano
+            }
+            
+            // Função para carregar a escolha salva dos cookies
+            function carregarEscolha() {
+              const cookies = document.cookie.split('; ').reduce((acc, cookie) => {
+                const [key, value] = cookie.split('=');
+                acc[key] = value;
+                return acc;
+              }, {});
+              const escolhaSalva = cookies['filtroOrdenacao'];
+              if (escolhaSalva) {
+                document.getElementById('ordenacaoHistorico').value = escolhaSalva;
+              }
+            }
+            
             function carregarHistorico(ordem = "alfabetica") {
                 const lista = document.getElementById('listaHistorico');
                 lista.innerHTML = ''; // Limpa a lista antes de recarregar
