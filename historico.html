@@ -215,7 +215,8 @@
         const copyButton = document.createElement('button');
         copyButton.textContent = 'Copiar';
         copyButton.className = 'action-button copy';
-        copyButton.addEventListener('click', () => copiarCitacao(span));
+        copyButton.addEventListener('click', () => copiarCitacao(span)); // Passa o elemento <span>
+
 
         // Criação do botão de exclusão
         const deleteButton = document.createElement('button');
@@ -247,13 +248,14 @@
         }
 */
 function copiarCitacao(citacaoElemento) {
-    const textoFormatado = citacaoElemento.innerText; // Obtém o texto sem HTML
+    const textoFormatado = citacaoElemento.textContent; // Obtém o texto sem HTML preservando quebras de linha
     navigator.clipboard.writeText(textoFormatado).then(() => {
         alert("Citação copiada!");
     }).catch(err => {
         console.error("Erro ao copiar: ", err);
     });
 }
+
 
 
         
