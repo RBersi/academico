@@ -228,7 +228,7 @@ function carregarHistorico() {
         const deleteButton = document.createElement('button');
         deleteButton.textContent = 'Excluir';
         deleteButton.className = 'action-button delete';
-        deleteButton.addEventListener('click', () => removerCitacao(index));
+        deleteButton.addEventListener('click', () => removerCitacao(citacao));
 
         // Adiciona os botões ao container de botões
         buttonContainer.appendChild(copyButton);
@@ -244,17 +244,6 @@ function carregarHistorico() {
 }
 
 
-
-        
-/*
-        function copiarCitacao(citacao) {
-            navigator.clipboard.writeText(decodeHTML(citacao)).then(() => {
-                alert("Referência copiada!");
-            }).catch(err => {
-                console.error("Erro ao copiar: ", err);
-            });
-        }
-*/
 function copiarCitacao(citacaoElemento) {
     const tempElement = document.createElement("div");
     tempElement.innerHTML = citacaoElemento.innerHTML;
@@ -271,12 +260,16 @@ function copiarCitacao(citacaoElemento) {
     });
 }
         
-        function removerCitacao(index) {
-            let historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
-            historico.splice(index, 1); // Remove a citação pelo índice
-            localStorage.setItem('historicoCitations', JSON.stringify(historico)); // Atualiza o localStorage
-            carregarHistorico(); // Recarrega o histórico na tela
-        }
+function removerCitacao(citacaoParaRemover) {
+    let historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
+
+    // Filtra removendo a citação exata
+    historico = historico.filter(citacao => citacao !== citacaoParaRemover);
+
+    localStorage.setItem('historicoCitations', JSON.stringify(historico)); // Atualiza o localStorage
+    carregarHistorico(); // Recarrega o histórico na tela
+}
+
 
     document.getElementById('limparHistorico').addEventListener('click', () => {
     if (confirm("Tem certeza que deseja limpar todo o histórico? Esta ação não pode ser desfeita.")) {
