@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico de Citações</title>
+    <style>
+         body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+        .citation-output {
+            margin-top: 20px;
+            padding: 10px;
+            background: #e9ecef;
+            border-radius: 4px;
+            white-space: pre-wrap;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .bold-title {
+           font-weight: bold;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: white; /* Fundo branco */
+            color: black; /* Texto preto */
+            padding: 10px 20px; /* Espaçamento interno */
+            border-bottom: 1px solid #ccc; /* Linha fina na parte inferior */
+            margin-bottom: 20px; /* Espaçamento abaixo do cabeçalho */
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+        .header-logo {
+            width: 25px; /* Diminuído o tamanho do favicon */
+            height: 25px;
+            margin-right: 10px;
+        }
+        .header-title {
+            font-size: 18px; /* Tamanho maior para o título */
+            font-weight: normal; /* Sem negrito */
+        }
+        .header .historico-link {
+            text-decoration: none;
+            color: #007bff; /* Cor azul para o link */
+            font-size: 14px; /* Tamanho menor para o link */
+            font-weight: normal; /* Sem negrito */
+            cursor: pointer;
+        }
+        .header .historico-link:hover {
+            text-decoration: underline;
+        }
+        .container {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <img src="favcon.png" alt="Logo" class="header-logo">
+            <span class="header-title">Gerador de Citações ABNT</span>
+        </div>
+        <div class="header-right">
+            <a href="index.html" class="historico-link">Voltar ao Gerador</a>
+        </div>
+    </header>
+
+    <h1>Histórico de Citações</h1>
+    <ul id="listaHistorico"></ul>
+    <div class="container">
+        <button id="limparHistorico">Limpar Histórico</button>
+    </div>
+
+    <footer>
+        Desenvolvido por <a href="https://github.com/RBersi" target="_blank">Bersi</a> - 2025
+    </footer>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        function decodeHTML(html) {
+            const txt = document.createElement("textarea");
+            txt.innerHTML = html;
+            return txt.value;
+        }
+
+        function carregarHistorico() {
+            const lista = document.getElementById('listaHistorico');
+            lista.innerHTML = ''; // Limpa a lista antes de recarregar
+            const historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
+
+            if (historico.length === 0) {
+                const li = document.createElement('li');
+                li.textContent = 'Histórico vazio.';
+                lista.appendChild(li);
+                return;
+            }
+
+            historico.forEach((citacao, index) => {
+                const li = document.createElement('li');
+                li.style.position = "relative"; // Para posicionamento correto dos botões
+
+                // Cria o texto da citação e interpreta o HTML salvo
+                const span = document.createElement('span');
+                span.innerHTML = decodeHTML(citacao);
+
+                // Criação do botão de copiar
+                const copyButton = document.createElement('button');
+                copyButton.textContent = 'Copiar';
+                copyButton.className = 'action-button';
+                copyButton.style.display = 'none'; // Oculto por padrão
+                copyButton.addEventListener('click', () => copiarCitacao(citacao));
+
+                // Criação do botão de exclusão
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Excluir';
+                deleteButton.className = 'action-button';
+                deleteButton.style.display = 'none'; // Oculto por padrão
+                deleteButton.addEventListener('click', () => removerCitacao(index));
+
+                // Exibir botões ao passar o mouse
+                li.addEventListener('mouseenter', () => {
+                    copyButton.style.display = 'inline-block';
+                    deleteButton.style.display = 'inline-block';
+                });
+
+                // Ocultar botões ao sair com o mouse
+                li.addEventListener('mouseleave', () => {
+                    copyButton.style.display = 'none';
+                    deleteButton.style.display = 'none';
+                });
+
+                // Adiciona os elementos ao <li>
+                li.appendChild(span);
+                li.appendChild(copyButton);
+                li.appendChild(deleteButton);
+
+                // Adiciona o <li> à lista
+                lista.appendChild(li);
+            });
+        }
+
+        function copiarCitacao(citacao) {
+            navigator.clipboard.writeText(decodeHTML(citacao)).then(() => {
+                alert("Citação copiada!");
+            }).catch(err => {
+                console.error("Erro ao copiar: ", err);
+            });
+        }
+
+        function removerCitacao(index) {
+            let historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
+            historico.splice(index, 1); // Remove a citação pelo índice
+            localStorage.setItem('historicoCitations', JSON.stringify(historico)); // Atualiza o localStorage
+            carregarHistorico(); // Recarrega o histórico na tela
+        }
+
+        document.getElementById('limparHistorico').addEventListener('click', () => {
+            localStorage.removeItem('historicoCitations'); // Remove o histórico completo
+            carregarHistorico(); // Recarrega o histórico na tela
+        });
+
+        carregarHistorico(); // Carrega o histórico inicial
+    });
+    </script>
+
+    <style>
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background: #fff;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s;
+        }
+        li:hover {
+            background: #f1f1f1;
+        }
+        .action-button {
+            margin-left: 10px;
+            padding: 5px 10px;
+            font-size: 14px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .action-button:first-of-type {
+            background-color: #28a745;
+            color: white;
+        }
+        .action-button:last-of-type {
+            background-color: #dc3545;
+            color: white;
+        }
+        .action-button:hover {
+            opacity: 0.8;
+        }
+    </style>
+</body>
+
+</html>
