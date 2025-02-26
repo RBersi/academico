@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta property="og:title" content="Gerador de Referências ABNT">
+    <meta property="og:image" content="https://i.imgur.com/UuSdpJM.jpeg">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <title>Histórico de Referências</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        padding: 0;
+        background-color: #f9f9f9;
+    }
+    h1 {
+        text-align: center;
+        color: #333;
+    }
+    form {
+        max-width: 600px;
+        margin: 0 auto;
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    label {
+        display: block;
+        margin-top: 10px;
+        font-weight: bold;
+    }
+    input, select {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    button {
+        display: inline-block;
+        margin-top: 15px;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    button:hover {
+        background-color: #0056b3;
+    }
+    footer {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 14px;
+        color: #666;
+    }
+    .citation-output {
+        margin-top: 20px;
+        padding: 10px;
+        background: #e9ecef;
+        border-radius: 4px;
+        white-space: pre-wrap;
+    }
+    .error {
+        color: red;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+    .bold-title {
+        font-weight: bold;
+    }
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: white;
+        color: black;
+        padding: 10px 20px;
+        border-bottom: 1px solid #ccc;
+        margin-bottom: 20px;
+    }
+    .header-left {
+        display: flex;
+        align-items: center;
+    }
+    .header-logo {
+        width: 25px;
+        height: 25px;
+        margin-right: 10px;
+    }
+    .header-title {
+        font-size: 18px;
+        font-weight: normal;
+    }
+    .header .historico-link {
+        text-decoration: none;
+        color: #007bff;
+        font-size: 14px;
+        font-weight: normal;
+        cursor: pointer;
+    }
+    .header .historico-link:hover {
+        text-decoration: underline;
+    }
+    .container {
+        text-align: center;
+    }
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+    li {
+        background: #fff;
+        padding: 10px;
+        margin: 5px 0;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: background 0.3s;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    li:hover {
+        background: #f1f1f1;
+    }
+    .button-container {
+        display: flex;
+        gap: 5px;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+    }
+    li:hover .button-container {
+        opacity: 1;
+    }
+    .action-button {
+        padding: 5px 8px;
+        font-size: 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+    .copy {
+        background-color: #28a745;
+        color: white;
+    }
+    .delete {
+        background-color: #dc3545;
+        color: white;
+    }
+    .action-button:hover {
+        opacity: 0.8;
+    }
+</style>
+
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <img src="favcon.png" alt="Logo" class="header-logo">
+            <span class="header-title">Gerador de Referências ABNT</span>
+        </div>
+        <div class="header-right">
+            <a href="index.html" class="historico-link">Voltar ao Gerador</a>
+        </div>
+    </header>
+    <h1>Histórico de Referências</h1>
+    <ul id="listaHistorico"></ul>
+    <div class="container">
+        <button id="limparHistorico">Limpar Histórico</button>
+    </div>
+
+    <footer>
+        Desenvolvido por <a href="https://github.com/RBersi" target="_blank">Bersi</a> - 2025
+    </footer>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        function decodeHTML(html) {
+            const txt = document.createElement("textarea");
+            txt.innerHTML = html;
+            return txt.value;
+        }
+
+function carregarHistorico() {
+    const lista = document.getElementById('listaHistorico');
+    lista.innerHTML = ''; // Limpa a lista antes de recarregar
+    let historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
+
+    if (historico.length === 0) {
+        const li = document.createElement('li');
+        li.textContent = 'Histórico vazio.';
+        lista.appendChild(li);
+        return;
+    }
+
+    // Ordena as referências alfabeticamente (ignorando maiúsculas/minúsculas)
+    historico.sort((a, b) => {
+        const citacaoA = a.toLowerCase();
+        const citacaoB = b.toLowerCase();
+        return citacaoA.localeCompare(citacaoB);
+    });
+
+    historico.forEach((citacao, index) => {
+        const li = document.createElement('li');
+
+        // Criação do contêiner da citação
+        const citationContainer = document.createElement('span');
+        citationContainer.innerHTML = decodeHTML(citacao);
+
+        // Criação do contêiner dos botões
+        const buttonContainer = document.createElement('div');
+        buttonContainer.className = 'button-container';
+
+        // Criação do botão de copiar
+        const copyButton = document.createElement('button');
+        copyButton.textContent = 'Copiar';
+        copyButton.className = 'action-button copy';
+        copyButton.addEventListener('click', () => copiarCitacao(citationContainer));
+
+        // Criação do botão de exclusão
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Excluir';
+        deleteButton.className = 'action-button delete';
+        deleteButton.addEventListener('click', () => removerCitacao(index));
+
+        // Adiciona os botões ao container de botões
+        buttonContainer.appendChild(copyButton);
+        buttonContainer.appendChild(deleteButton);
+
+        // Adiciona os elementos ao <li>
+        li.appendChild(citationContainer);
+        li.appendChild(buttonContainer);
+
+        // Adiciona o <li> à lista
+        lista.appendChild(li);
+    });
+}
+
+
+
+        
+/*
+        function copiarCitacao(citacao) {
+            navigator.clipboard.writeText(decodeHTML(citacao)).then(() => {
+                alert("Referência copiada!");
+            }).catch(err => {
+                console.error("Erro ao copiar: ", err);
+            });
+        }
+*/
+function copiarCitacao(citacaoElemento) {
+    const tempElement = document.createElement("div");
+    tempElement.innerHTML = citacaoElemento.innerHTML;
+    const textoFormatado = tempElement.textContent || tempElement.innerText;
+
+    navigator.clipboard.writeText(textoFormatado.trim()).then(() => {
+        // Feedback visual no botão
+        citacaoElemento.nextSibling.firstChild.textContent = "Copiado!";
+        setTimeout(() => {
+            citacaoElemento.nextSibling.firstChild.textContent = "Copiar";
+        }, 1500);
+    }).catch(err => {
+        console.error("Erro ao copiar: ", err);
+    });
+}
+        
+        function removerCitacao(index) {
+            let historico = JSON.parse(localStorage.getItem('historicoCitations')) || [];
+            historico.splice(index, 1); // Remove a citação pelo índice
+            localStorage.setItem('historicoCitations', JSON.stringify(historico)); // Atualiza o localStorage
+            carregarHistorico(); // Recarrega o histórico na tela
+        }
+
+    document.getElementById('limparHistorico').addEventListener('click', () => {
+    if (confirm("Tem certeza que deseja limpar todo o histórico? Esta ação não pode ser desfeita.")) {
+        localStorage.removeItem('historicoCitations');
+        carregarHistorico();
+    }
+});
+
+
+        carregarHistorico(); // Carrega o histórico inicial
+    });
+    </script>
+
+    
+</body>
+
+</html>
