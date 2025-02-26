@@ -291,16 +291,6 @@ function carregarHistorico() {
     });
 }
 
-
-
-    
-    // Ordena as referências alfabeticamente (ignorando maiúsculas/minúsculas)
-    historico.sort((a, b) => {
-        const citacaoA = a.toLowerCase();
-        const citacaoB = b.toLowerCase();
-        return citacaoA.localeCompare(citacaoB);
-    });
-
     historico.forEach((citacao, index) => {
         const li = document.createElement('li');
 
