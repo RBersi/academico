@@ -150,6 +150,8 @@
         <input type="text" id="articleTitle">
         <label for="articleJournal">Revista:</label>
         <input type="text" id="articleJournal">
+        <label for="articleVolume">Cidade:</label>
+        <input type="text" id="articleCity">
         <label for="articleVolume">Volume:</label>
         <input type="text" id="articleVolume">
         <label for="articleNumber">Número:</label>
@@ -445,6 +447,7 @@ function generateArticleCitation() {
     const authors = formatAuthors(document.getElementById("articleAuthors").value.trim());
     const title = document.getElementById("articleTitle").value.trim();
     const journal = document.getElementById("articleJournal").value.trim();
+    const city = document.getElementById("articleCity").value.trim();
     const volume = document.getElementById("articleVolume").value.trim();
     const number = document.getElementById("articleNumber").value.trim();
     const year = document.getElementById("articleYear").value.trim();
@@ -454,6 +457,7 @@ function generateArticleCitation() {
     const data = document.getElementById("articleAccessDate").value.trim();
 
 const citation = `${authors}. ${title}. <span class="bold-title">${journal}</span>` +
+  `${city ? `, v. ${city}` : ''}` +
   `${volume ? `, v. ${volume}` : ''}` +
   `${number ? `, n. ${number}` : ''}` +
   `${pages ? `, p. ${pages}` : ''}` +
